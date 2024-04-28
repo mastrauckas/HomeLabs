@@ -89,7 +89,7 @@ param managedKubeCluster = {
   }
   addonProfiles: {
     azurepolicy: null
-    azureKeyvaultSecretsProvider: null
+    azureKeyvaultSecretsProvider: null // Secrets Store CSI Driver
     // azureKeyvaultSecretsProvider: {
     //   enabled: true
     //   secrectStoreConfig: {
