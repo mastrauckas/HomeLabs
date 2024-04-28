@@ -1,13 +1,15 @@
-$resourceGroup = 'k8s-testing-rg'
+$region = 'eastus'
+$resourceGroup = "k8s-testing-cluster-$region-rg"
 
 az group create `
     --resource-group $resourceGroup `
-    --location 'eastus';
+    --location $region;
 
-az deployment group validate `
+az deployment group what-if `
     --name k8s-testing-deployment `
     --template-file ./main.bicep `
     --parameters ./parameters/main.bicepparam `
+    --parameters region=$region `
     --resource-group $resourceGroup `
     --debug `
     --verbose;
