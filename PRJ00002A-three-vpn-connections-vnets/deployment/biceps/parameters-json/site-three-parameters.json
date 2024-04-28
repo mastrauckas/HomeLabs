@@ -1,0 +1,198 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "installationSettings": {
+            "value": {
+                "tags": {
+                    "Project": "PRJ00002A",
+                    "Purpose": "Learning"
+                },
+                "vNetSettings": {
+                    "vNets": [
+                        {
+                            "name": "site-three-vpn-vnet",
+                            "region": "eastus",
+                            "addressPrefixes": [
+                                "10.0.100.0/24"
+                            ],
+                            "subnets": [
+                                {
+                                    "name": "GatewaySubnet",
+                                    "addressPrefix": "10.0.100.0/24",
+                                    "privateEndpointNetworkPolicies": "Disabled",
+                                    "privateLinkServiceNetworkPolicies": "Disabled"
+                                }
+                            ]
+                        },
+                        {
+                            "name": "site-three-vm-vnet",
+                            "region": "eastus",
+                            "addressPrefixes": [
+                                "10.0.200.0/24"
+                            ],
+                            "subnets": [
+                                {
+                                    "name": "site-three-vm-subnet",
+                                    "addressPrefix": "10.0.200.0/24",
+                                    "privateEndpointNetworkPolicies": "Disabled",
+                                    "privateLinkServiceNetworkPolicies": "Disabled"
+                                }
+                            ]
+                        }
+                    ]
+                },
+                "vpnSettings": {
+                    "region": "eastus",
+                    "vNet": {
+                        "name": "site-three-vpn-vnet",
+                        "subnetName": "GatewaySubnet",
+                        "region": "eastus"
+                    },
+                    "vpn": {
+                        "name": "site-three-virtual-gateway",
+                        "ipConfigurationName": "site-three-vpn-ip-configuration",
+                        "enablePrivateIpAddress": false,
+                        "sku": "VpnGw1",
+                        "skuTier": "VpnGw1",
+                        "type": "RouteBased",
+                        "enableBgp": false,
+                        "activeActive": false,
+                        "gatewayGeneration": "Generation1",
+                        "gatewayType": "Vpn"
+                    },
+                    "publicIpAddress": {
+                        "name": "site-three-vpn-ip-address",
+                        "version": "IPv4",
+                        "allocationMethod": "Static",
+                        "sku": "Standard",
+                        "tier": "Regional"
+                    },
+                    "remoteSites": [
+                        {
+                            "connection": {
+                                "name": "from-site-three-to-site-one-connection",
+                                "connectionMode": "Default",
+                                "connectionProtocol": "IKEv2",
+                                "connectionType": "IPsec",
+                                "sharedKey": "Testing12345$",
+                                "useLocalAzureIpAddress": false,
+                                "enableBgp": false,
+                                "ipsecPolicies": [],
+                                "usePolicyBasedTrafficSelectors": false,
+                                "trafficSelectorPolicies": [],
+                                "ingressNatRules": [],
+                                "egressNatRules": [],
+                                "dpdTimeoutSeconds": 0,
+                                "externalVpn": {
+                                    "publicIpAddressName": "site-one-vpn-ip-address",
+                                    "resourceGroup": "site-one-rg"
+                                }
+                            },
+                            "localNetworkGateway": {
+                                "name": "from-site-three-to-site-one-local",
+                                "subnetAddressPrefixes": [
+                                    "192.168.200.0/24"
+                                ]
+                            }
+                        }
+                    ]
+                },
+                "sqlServerSettings": null,
+                "virtualMachineSettings": {
+                    "virtualMachines": [
+                        {
+                            "name": "site-three-vm",
+                            "region": "eastus",
+                            "adminUserName": "michael",
+                            "adminPassword": "Testing12345$",
+                            "computerName": "site-three-vm",
+                            "timeZone": "US Eastern Standard Time",
+                            "licenseType": "Windows_Server",
+                            "publisher": "MicrosoftWindowsDesktop",
+                            "offer": "Windows-10",
+                            "sku": "win10-22h2-pro-g2",
+                            "version": "latest",
+                            "vmSize": "Standard_DS1_v2",
+                            "okDiskName": "site-three-vm-machine-os-disk",
+                            "caching": "ReadWrite",
+                            "createOption": "FromImage",
+                            "storageAccountType": "Premium_LRS",
+                            "diskSizeGB": 128,
+                            "networkInterface": {
+                                "name": "site-three-vm-nic",
+                                "dnsServers": [],
+                                "internalDnsNameLabel": null,
+                                "networkSecurityGroup": {
+                                    "name": "site-three-public-ip-address-nsg",
+                                    "rules": [
+                                        {
+                                            "name": "Allow-RDP-All",
+                                            "direction": "Inbound",
+                                            "priority": 100,
+                                            "access": "Allow",
+                                            "destinationPortRange": "3389",
+                                            "protocol": "Tcp",
+                                            "sourcePortRange": "*",
+                                            "sourceAddressPrefix": "*",
+                                            "destinationAddressPrefix": "*"
+                                        }
+                                    ]
+                                },
+                                "ipConfigurations": [
+                                    {
+                                        "name": "site-three-vm-ip-address",
+                                        "primary": true,
+                                        "privateIPAllocationMethod": "Dynamic",
+                                        "privateIPAddress": null,
+                                        "privateIPAddressVersion": null,
+                                        "publicIpAddressDeleteOption": "Delete",
+                                        "vNet": {
+                                            "name": "site-three-vm-vnet",
+                                            "subnetName": "site-three-vm-subnet",
+                                            "region": "eastus"
+                                        },
+                                        "publicIpAddress": {
+                                            "name": "site-three-vm-ip-address",
+                                            "version": "IPv4",
+                                            "allocationMethod": "Static",
+                                            "sku": "Standard",
+                                            "tier": "Regional"
+                                        }
+                                    }
+                                ]
+                            },
+                            "zones": [
+                                "1"
+                            ]
+                        }
+                    ]
+                },
+                "peeringVirtualNetworkSettings": {
+                    "peeringVirtualNetworks": [
+                        {
+                            "name": "from-vpn-to-vm-peering-link",
+                            "fromName": "site-three-vpn-vnet",
+                            "toName": "site-three-vm-vnet",
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": true,
+                            "useRemoteGateways": false
+                        },
+                        {
+                            "name": "from-vm-to-vpn-peering-link",
+                            "fromName": "site-three-vm-vnet",
+                            "toName": "site-three-vpn-vnet",
+                            "allowVirtualNetworkAccess": true,
+                            "allowForwardedTraffic": false,
+                            "allowGatewayTransit": false,
+                            "useRemoteGateways": true
+                        }
+                    ]
+                },
+                "privateDnsZoneLinkSettings": null,
+                "privateDnsResolverSettings": null
+            }
+        }
+    }
+}
