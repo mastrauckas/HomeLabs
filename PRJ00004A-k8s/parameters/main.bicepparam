@@ -1,4 +1,4 @@
-using 'main.bicep'
+using '../main.bicep'
 
 param tags = {
   Project: 'PRJ00004A'
@@ -15,7 +15,7 @@ param managedKubeCluster = {
     tier: 'Free'
   }
   enableRBAC: true
-  nodeResourceGroup: 'aks-test-cluster-managed-rg'
+  nodeResourceGroup: 'k8s-testing-managed-rg'
   disableLocalAccounts: false
   aadProfile: null
   autoUpgradeProfile: {
@@ -29,14 +29,11 @@ param managedKubeCluster = {
   extendedLocation: null
   agentPoolProfiles: [
     {
-      name: 'snodepool'
+      name: 'systempool1'
       mode: 'System'
-      count: 1 // Number of agents (VMs) to host docker containers. 
-      // Allowed values must be in the range of 0 to 1000 (inclusive) 
-      // for user pools and in the range of 1 to 1000 (inclusive) 
-      // for system pools. The default value is 1.
-      minCount: 1 // The minimum number of nodes for auto-scaling
-      maxCount: 1 // The maximum number of nodes for auto-scaling
+      count: 2 // This is how many nodes/vms to start with.
+      minCount: 2 // The minimum number of nodes/vms for auto-scaling
+      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
       vmSize: 'Standard_D2s_v3'
       osType: 'Linux'
@@ -54,16 +51,13 @@ param managedKubeCluster = {
       nodeTaints: []
     }
     {
-      name: 'unodepool'
+      name: 'userpool1'
       mode: 'User'
-      count: 1 // Number of agents (VMs) to host docker containers. 
-      // Allowed values must be in the range of 0 to 1000 (inclusive) 
-      // for user pools and in the range of 1 to 1000 (inclusive) 
-      // for system pools. The default value is 1.
-      minCount: 1 // The minimum number of nodes for auto-scaling
-      maxCount: 1 // The maximum number of nodes for auto-scaling
+      count: 2 // This is how many nodes/vms to start with.
+      minCount: 2 // The minimum number of nodes/vms for auto-scaling
+      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
-      vmSize: 'Standard_D2s_v3'
+      vmSize: 'Standard_B2s'
       osType: 'Linux'
       osDiskSizeGB: 30
       type: 'VirtualMachineScaleSets'
