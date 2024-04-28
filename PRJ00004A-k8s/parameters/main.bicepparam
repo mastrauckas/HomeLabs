@@ -5,6 +5,7 @@ param tags = {
   Purpose: 'Learning'
 }
 
+// https://learn.microsoft.com/en-us/azure/templates/microsoft.containerservice/2023-01-02-preview/managedclusters?pivots=deployment-language-bicep
 param managedKubeCluster = {
   name: 'aks-test-cluster'
   region: 'eastus'
@@ -19,9 +20,8 @@ param managedKubeCluster = {
   disableLocalAccounts: false
   aadProfile: null
   autoUpgradeProfile: {
-    // upgradeChannel: 'stable'
-    upgradeChannel: 'patch'
-    nodeOSUpgradeChannel: 'NodeImage'
+    upgradeChannel: 'patch' // Values can be none, patch, rapid, stable and node-image
+    nodeOSUpgradeChannel: 'NodeImage' // Values can be None, Unmanaged, SecurityPatch and NodeImage
   }
   identity: {
     type: 'SystemAssigned'
@@ -35,11 +35,13 @@ param managedKubeCluster = {
       minCount: 2 // The minimum number of nodes/vms for auto-scaling
       maxCount: 5 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
+      messageOfTheDay: null
       vmSize: 'Standard_D2s_v3'
       osType: 'Linux'
       osDiskSizeGB: 30
       type: 'VirtualMachineScaleSets'
       enableAutoScaling: true
+      scaleSetPriority: 'Regular' // Values Regular and Spot
       enableNodePublicIP: false
       availabilityZones: [
         '1'
@@ -53,15 +55,17 @@ param managedKubeCluster = {
     {
       name: 'userpool1'
       mode: 'User'
-      count: 2 // This is how many nodes/vms to start with.
-      minCount: 2 // The minimum number of nodes/vms for auto-scaling
+      count: 3 // This is how many nodes/vms to start with.
+      minCount: 3 // The minimum number of nodes/vms for auto-scaling
       maxCount: 5 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
+      messageOfTheDay: null
       vmSize: 'Standard_B2s'
       osType: 'Linux'
       osDiskSizeGB: 30
       type: 'VirtualMachineScaleSets'
       enableAutoScaling: true
+      scaleSetPriority: 'Regular' // Values Regular and Spot
       enableNodePublicIP: false
       availabilityZones: [
         '1'
@@ -75,12 +79,24 @@ param managedKubeCluster = {
   ]
   linuxProfile: null
   apiServerAccessProfile: {
-    authorizedIPRanges: null
-    enablePrivateCluster: null
+    authorizedIPRanges: [] //
+    enablePrivateCluster: false // This will create a private AKS cluster.
+    enablePrivateClusterPublicFQDN: false // Whether to create additional public FQDN for private cluster or not.
+    privateDNSZone: null
+    subnetId: null
+    // disableRunCommand: false
+    // enableVnetIntegration: false
   }
   addonProfiles: {
     azurepolicy: null
     azureKeyvaultSecretsProvider: null
+    // azureKeyvaultSecretsProvider: {
+    //   enabled: true
+    //   secrectStoreConfig: {
+    //     enableSecretRotation: false
+    //     rotationPollInterval: '2m'
+    //   }
+    // }
   }
   diskEncryptionSetID: null
   networkProfile: {
@@ -91,5 +107,5 @@ param managedKubeCluster = {
     serviceCidr: ''
     dnsServiceIP: ''
   }
-  supportPlan: 'KubernetesOfficial'
+  supportPlan: 'KubernetesOfficial' // Values can be AKSLongTermSupport and KubernetesOfficial
 }
