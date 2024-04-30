@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: Pod
-metadata:
-  name: showversionsv6
-spec:
-  containers:
-  - name: showversionsv6
-    image: localhost:8000/showversionsv6:v1.0.0
