@@ -5,7 +5,7 @@ metadata:
   labels:
     app: printdotnet6
 spec:
-  replicas: 4
+  replicas: 5
   selector:
     matchLabels:
       app: printdotnet6
@@ -18,6 +18,6 @@ spec:
       - name: printdotnet6
         image: mastrauckas/printdotnet6:v1.0
       topologySpreadConstraints:
-        - maxSkew: 2
+        - maxSkew: 1
           topologyKey: kubernetes.io/hostname
           whenUnsatisfiable: DoNotSchedule

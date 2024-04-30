@@ -12,3 +12,4 @@ This test will setup a Kubernetes cluster will 3 nodes all using Kubernetes v1.2
 2. View your cluster with `kind get clusters`.
 3. Put a trait on node 1 with `kubectl taint nodes trait-cluster-test-worker dotnet=6.0:NoSchedule`.
 4. Now add a pod with no tolerations with `kubectl apply -f .\pods-example1.yaml`.
+5. Delete cluster by running `delete clusters trait-cluster-test`
