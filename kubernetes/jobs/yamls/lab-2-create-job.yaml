@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: print-message-job-example-2
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: main
+        image: docker.io/library/bash:5
+        command: ["bash"]
+        args:
+          - -c
+          - exitCode="$((RANDOM % 3))" && echo "I am a Kubernetes job with an exit code of ${exitCode}!" && sleep 5 && exit ${exitCode}
+  podFailurePolicy:
+    rules:
+    - action: Count # Count: use to indicate that the Pod should be handled in the default way. The counter towards the .spec.backoffLimit should be incremented.
+      onExitCodes:
+        operator: In
+        values: [1]
+    - action: FailJob # FailJob: use to indicate that the Pod's job should be marked as Failed and all running Pods should be terminated.
+      onExitCodes:
+        operator: In
+        values: [2]
+        

@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: print-message-job-example-1
+spec:
+  template:
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: 
+          - "echo"
+          - "I am a Kubernetes job!"
+      restartPolicy: Never

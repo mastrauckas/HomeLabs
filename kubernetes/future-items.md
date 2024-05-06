@@ -1,0 +1,41 @@
+# Future Items
+
+- RBAC
+- QoS Class
+- Jobs
+  - ~~Normal single Job.~~
+  - Normal multiple Jobs.
+  - Considered failed by exit code.
+  - backoffLimit
+  - activeDeadlineSeconds
+  - restartPolicy
+    - Never
+    - run OnFailure
+  - podFailurePolicy
+    - FailJob
+    - Ignore
+    - Count
+    - FailIndex
+    - Restrict by container name
+  - Recurring cron job
+    - Run a recurring.
+    - When a recurring jobs
+    - Will recurring overlap
+  - parallelism
+  - completions
+  - completionMode
+  - successPolicy
+- PodDisruptionBudget
+  - Disruptions
+- Draining
+- Labels
+  - nodeselector
+- Taints and Tolerations
+- [Scheduling, Preemption and Eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/)
+- Resource Quotas
+  - affinity
+  - anti affinity
+  - Node affinity weight
+  - podAntiAffinity
+  - podAffinity
+  - topologySpreadConstraints

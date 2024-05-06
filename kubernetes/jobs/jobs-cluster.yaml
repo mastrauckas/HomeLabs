@@ -1,0 +1,33 @@
+---
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: jobs-cluster
+servers: 1
+agents: 6
+image: docker.io/rancher/k3s:v1.29.1-k3s1
+options:
+  k3s: # options passed on to K3s itself
+    nodeLabels:
+      - label: zone=zone-a
+        nodeFilters:
+          - server:0
+          - agent:0
+          - agent:1
+          - agent:2
+      - label: zone=zone-b
+        nodeFilters:
+          - agent:3
+          - agent:4
+          - agent:5
+      - label: region=eastus
+        nodeFilters:
+          - server:0
+          - agent:0
+          - agent:1
+          - agent:2
+      - label: region=westus
+        nodeFilters:
+          - agent:3
+          - agent:4
+          - agent:5
