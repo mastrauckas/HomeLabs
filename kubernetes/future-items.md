@@ -8,6 +8,7 @@
   - Considered failed by exit code.
   - backoffLimit
   - activeDeadlineSeconds
+  - startingDeadlineSeconds  
   - restartPolicy
     - Never
     - run OnFailure
