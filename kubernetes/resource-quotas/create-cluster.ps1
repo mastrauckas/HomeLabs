@@ -1,0 +1,1 @@
+k3d cluster create --config .\resource-quotas-cluster.yaml

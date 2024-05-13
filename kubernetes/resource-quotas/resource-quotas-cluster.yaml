@@ -1,0 +1,51 @@
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: resource-quotas-cluster
+servers: 1
+agents: 10
+image: docker.io/rancher/k3s:v1.29.1-k3s1
+options:
+  k3s:
+    nodeLabels:
+      - label: zone=zone-a
+        nodeFilters:
+          - agent:0
+          - agent:1
+          - agent:2
+          - agent:5
+          - agent:6
+      - label: zone=zone-b
+        nodeFilters:
+          - agent:3
+          - agent:4
+          - agent:7
+          - agent:8
+          - agent:9
+      - label: region=eastus
+        nodeFilters:
+          - agent:0
+          - agent:1
+          - agent:2
+          - agent:3
+          - agent:4
+      - label: region=westus
+        nodeFilters:
+          - agent:5
+          - agent:6
+          - agent:7
+          - agent:8
+          - agent:9
+
+# eastus
+# agent0  zone-a 
+# agent1  zone-a
+# agent2  zone-a
+# agent3  zone-b
+# agent4  zone-b
+# westus 
+# agent5  zone-a 
+# agent6  zone-a
+# agent7  zone-b
+# agent8  zone-b
+# agent9  zone-b
