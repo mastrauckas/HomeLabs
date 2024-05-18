@@ -3,7 +3,7 @@ using '../main.bicep'
 param myIpAddress = ''
 param primaryRegion = ''
 
-var enableFreeTier = false // This can only be enabled once per subscription.
+var enableFreeTier = true // This can only be enabled once per subscription.
 
 // Whitelist my ip addres and the Azure Portals IP Addresses.
 // Shows Portals IP Addresses https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-configure-firewall#allow-requests-from-the-azure-portal
@@ -40,11 +40,10 @@ var ipAddressesToAdd = [
   }
 ]
 
-param tags = {
-}
+param tags = {}
 
-param logAnalyticsWorkspace = {
-  name: '${environmentPrefix}-carrier-hub-log-analytics-workspace'
+param workspace = {
+  name: 'cosmos-db-log-analytics-workspace'
   region: primaryRegion
   retentionInDays: 30
   publicNetworkAccessForIngestion: 'Enabled'
@@ -59,7 +58,7 @@ param logAnalyticsWorkspace = {
 }
 
 param workspaceDiagnosticSettings = {
-  name: '${environmentPrefix} Carrier Hub Diagnostic setting'
+  name: 'Cosmos DB Diagnostic setting'
   logs: [
     {
       category: 'DataPlaneRequests'
@@ -90,16 +89,17 @@ param workspaceDiagnosticSettings = {
   ]
 }
 
-var tenantsContainer = {
-  name: 'Tenants'
+var machineCounter = {
+  name: 'MachineCounter'
   autoscaleSettings: null
-  throughput: null
+  throughput: 1000
   defaultTtl: -1
+
   materializedViewDefinition: {}
   restoreParameters: []
   partitionKey: {
     paths: [
-      '/tenantId'
+      '/machineName'
     ]
     kind: 'Hash'
   }
@@ -108,42 +108,7 @@ var tenantsContainer = {
     indexingMode: 'consistent'
     includedPaths: [
       {
-        path: '/tenantId/?'
-      }
-      {
-        path: '/[]/clientId/?'
-      }
-    ]
-    excludedPaths: [
-      {
-        path: '/*'
-      }
-    ]
-    compositeIndexes: []
-    spatialIndexes: []
-  }
-}
-
-var shipmentImportsContainer = {
-  name: 'ShipmentImports'
-  autoscaleSettings: null
-  throughput: null
-  defaultTtl: -1
-
-  materializedViewDefinition: {}
-  restoreParameters: []
-  partitionKey: {
-    paths: [
-      '/partitionKey'
-    ]
-    kind: 'Hash'
-  }
-  uniqueKeyPolicy: {}
-  indexingPolicy: {
-    indexingMode: 'consistent'
-    includedPaths: [
-      {
-        path: '/partitionKey/?'
+        path: '/machineName/?'
       }
     ]
     excludedPaths: [
@@ -152,23 +117,27 @@ var shipmentImportsContainer = {
       }
     ]
     compositeIndexes: [
-      [
-        {
-          path: '/tenantId'
-          order: 'ascending'
-        }
-        {
-          path: '/wasSentDateTimeUtc'
-          order: 'descending'
-        }
-      ]
+      // [
+      //   {
+      //     path: '/city'
+      //     order: 'descending'
+      //   }
+      //   {
+      //     path: '/state'
+      //     order: 'ascending'
+      //   }
+      //   {
+      //     path: '/zipCode'
+      //     order: 'descending'
+      //   }
+      // ]
     ]
     spatialIndexes: []
   }
 }
 
 param cosmosAccount = {
-  name: '${environmentPrefix}-carrier-hub-db'
+  name: 'machine-counting-db'
   region: primaryRegion
   kind: 'GlobalDocumentDB'
   databaseAccountOfferType: 'Standard'
@@ -207,22 +176,33 @@ param cosmosAccount = {
     {
       failoverPriority: 0
       locationName: primaryRegion
+      isZoneRedundant: true
+    }
+    {
+      failoverPriority: 1
+      locationName: 'westus3'
+      isZoneRedundant: true
+    }
+    {
+      failoverPriority: 2
+      locationName: 'centralus'
       isZoneRedundant: false
     }
+    // {
+    //   failoverPriority: 0
+    //   locationName: 'southcentralus'
+    //   isZoneRedundant: true
+    // }
   ]
 
-  capabilities: [
-    {
-      name: 'EnableServerless'
-    }
-  ]
+  capabilities: []
 
   virtualNetworkRules: []
 
   ipRules: ipAddressesToAdd
 
   database: {
-    name: 'CarrierHub'
+    name: 'MachineCounterHub'
     createMode: 'Default'
     restoreParameters: null
     autoscaleSettings: null
@@ -230,9 +210,6 @@ param cosmosAccount = {
   }
 
   containers: [
-    tenantsContainer
-    shipmentImportsContainer
+    machineCounter
   ]
 }
-
-param privateEndpoints = []
