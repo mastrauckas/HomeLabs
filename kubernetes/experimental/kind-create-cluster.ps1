@@ -1,0 +1,1 @@
+kind create cluster --config .\kind-create-cluster.yaml
