@@ -5,6 +5,41 @@ param primaryRegion = ''
 
 var enableFreeTier = true // This can only be enabled once per subscription.
 
+var consistencyPolicy = {
+  // defaultConsistencyLevel: 'Strong'
+  defaultConsistencyLevel: 'ConsistentPrefix'
+  maxIntervalInSeconds: 0
+  maxStalenessPrefix: 0
+}
+
+var regions = [
+  {
+    failoverPriority: 0
+    locationName: primaryRegion
+    isZoneRedundant: false
+  }
+  // {
+  //   failoverPriority: 1
+  //   locationName: 'westus'
+  //   isZoneRedundant: false
+  // }
+  // {
+  //   failoverPriority: 1
+  //   locationName: 'westus3'
+  //   isZoneRedundant: true
+  // }
+  // {
+  //   failoverPriority: 2
+  //   locationName: 'centralus'
+  //   isZoneRedundant: false
+  // }
+  // {
+  //   failoverPriority: 3
+  //   locationName: 'southcentralus'
+  //   isZoneRedundant: false
+  // }
+]
+
 // Whitelist my ip addres and the Azure Portals IP Addresses.
 // Shows Portals IP Addresses https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-configure-firewall#allow-requests-from-the-azure-portal
 var ipAddressesToAdd = [
@@ -43,7 +78,7 @@ var ipAddressesToAdd = [
 param tags = {}
 
 param workspace = {
-  name: 'cosmos-db-log-analytics-workspace'
+  name: 'cosmos-testing-db-workspace'
   region: primaryRegion
   retentionInDays: 30
   publicNetworkAccessForIngestion: 'Enabled'
@@ -89,10 +124,10 @@ param workspaceDiagnosticSettings = {
   ]
 }
 
-var machineCounter = {
-  name: 'MachineCounter'
+var machinesCounter = {
+  name: 'Machines'
   autoscaleSettings: null
-  throughput: 1000
+  throughput: 500
   defaultTtl: -1
 
   materializedViewDefinition: {}
@@ -116,28 +151,56 @@ var machineCounter = {
         path: '/*'
       }
     ]
+    compositeIndexes: []
+    spatialIndexes: []
+  }
+}
+
+var addressesContainer = {
+  name: 'Addresses'
+  autoscaleSettings: null
+  throughput: 500
+  defaultTtl: -1
+
+  materializedViewDefinition: {}
+  restoreParameters: []
+  partitionKey: {
+    paths: [
+      '/customerId'
+    ]
+    kind: 'Hash'
+  }
+  uniqueKeyPolicy: {}
+  indexingPolicy: {
+    indexingMode: 'consistent'
+    includedPaths: [
+      {
+        path: '/customerId/?'
+      }
+    ]
+    excludedPaths: [
+      {
+        path: '/*'
+      }
+    ]
     compositeIndexes: [
-      // [
-      //   {
-      //     path: '/city'
-      //     order: 'descending'
-      //   }
-      //   {
-      //     path: '/state'
-      //     order: 'ascending'
-      //   }
-      //   {
-      //     path: '/zipCode'
-      //     order: 'descending'
-      //   }
-      // ]
+      [
+        {
+          path: '/customerId'
+          order: 'ascending'
+        }
+        {
+          path: '/isSent'
+          order: 'ascending'
+        }
+      ]
     ]
     spatialIndexes: []
   }
 }
 
 param cosmosAccount = {
-  name: 'machine-counting-db'
+  name: 'cosmos-testing-db'
   region: primaryRegion
   kind: 'GlobalDocumentDB'
   databaseAccountOfferType: 'Standard'
@@ -153,11 +216,7 @@ param cosmosAccount = {
     type: 'SystemAssigned'
   }
 
-  consistencyPolicy: {
-    defaultConsistencyLevel: 'Strong'
-    maxIntervalInSeconds: 0
-    maxStalenessPrefix: 0
-  }
+  consistencyPolicy: consistencyPolicy
 
   backupPolicy: {
     type: 'Periodic'
@@ -172,28 +231,7 @@ param cosmosAccount = {
     totalThroughputLimit: 1000
   }
 
-  regions: [
-    {
-      failoverPriority: 0
-      locationName: primaryRegion
-      isZoneRedundant: true
-    }
-    {
-      failoverPriority: 1
-      locationName: 'westus3'
-      isZoneRedundant: true
-    }
-    {
-      failoverPriority: 2
-      locationName: 'centralus'
-      isZoneRedundant: false
-    }
-    // {
-    //   failoverPriority: 0
-    //   locationName: 'southcentralus'
-    //   isZoneRedundant: true
-    // }
-  ]
+  regions: regions
 
   capabilities: []
 
@@ -202,7 +240,7 @@ param cosmosAccount = {
   ipRules: ipAddressesToAdd
 
   database: {
-    name: 'MachineCounterHub'
+    name: 'Testing'
     createMode: 'Default'
     restoreParameters: null
     autoscaleSettings: null
@@ -210,6 +248,7 @@ param cosmosAccount = {
   }
 
   containers: [
-    machineCounter
+    machinesCounter
+    addressesContainer
   ]
 }
