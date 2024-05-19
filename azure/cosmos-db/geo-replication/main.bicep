@@ -48,7 +48,6 @@ module CosmosContainerDeployment './modules/cosmos-container.bicep' = [
       cosmosAccountName: cosmosAccount.name
       cosmosDatabaseName: cosmosAccount.database.name
       cosmosContainer: container
-      // region: primaryRegion
     }
     dependsOn: [
       CosmosAcccountDeployment

@@ -2,7 +2,6 @@ param tags object
 param cosmosAccountName string
 param cosmosDatabaseName string
 param cosmosContainer object
-// param region string
 
 resource CosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' existing = {
   name: cosmosAccountName
@@ -12,7 +11,6 @@ resource CosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-previ
 
     resource CosmosDbContainer 'containers@2024-02-15-preview' = {
       name: cosmosContainer.name
-      // location: region
       tags: tags
       properties: {
         resource: {
