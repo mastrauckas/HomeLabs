@@ -4,6 +4,9 @@ param myIpAddress = ''
 param primaryRegion = ''
 
 var enableFreeTier = true // This can only be enabled once per subscription.
+var accountThroughput = 2000
+var containerThroughput = 400
+var databaseThroughput = null
 
 var consistencyPolicy = {
   // defaultConsistencyLevel: 'Strong'
@@ -127,7 +130,7 @@ param workspaceDiagnosticSettings = {
 var machinesCounter = {
   name: 'Machines'
   autoscaleSettings: null
-  throughput: 400
+  throughput: containerThroughput
   defaultTtl: -1
 
   materializedViewDefinition: {}
@@ -152,49 +155,6 @@ var machinesCounter = {
       }
     ]
     compositeIndexes: []
-    spatialIndexes: []
-  }
-}
-
-var addressesContainer = {
-  name: 'Addresses'
-  autoscaleSettings: null
-  throughput: 400
-  defaultTtl: -1
-
-  materializedViewDefinition: {}
-  restoreParameters: []
-  partitionKey: {
-    paths: [
-      '/customerId'
-    ]
-    kind: 'Hash'
-  }
-  uniqueKeyPolicy: {}
-  indexingPolicy: {
-    indexingMode: 'consistent'
-    includedPaths: [
-      {
-        path: '/customerId/?'
-      }
-    ]
-    excludedPaths: [
-      {
-        path: '/*'
-      }
-    ]
-    compositeIndexes: [
-      [
-        {
-          path: '/customerId'
-          order: 'ascending'
-        }
-        {
-          path: '/isSent'
-          order: 'ascending'
-        }
-      ]
-    ]
     spatialIndexes: []
   }
 }
@@ -228,7 +188,7 @@ param cosmosAccount = {
   }
 
   capacity: {
-    totalThroughputLimit: 2000
+    totalThroughputLimit: accountThroughput
   }
 
   regions: regions
@@ -244,11 +204,10 @@ param cosmosAccount = {
     createMode: 'Default'
     restoreParameters: null
     autoscaleSettings: null
-    throughput: null
+    throughput: databaseThroughput
   }
 
   containers: [
     machinesCounter
-    // addressesContainer
   ]
 }

@@ -7,13 +7,26 @@ $publicIpAddress = (Invoke-WebRequest ifconfig.me/ip).Content.Trim()
 
 If ($defaultSubscription -eq $developmentSubscriptionId) {
 
+    $example = Read-Host -Prompt 'What example do you want to create'
+
+    if ($example -eq 1) {
+        $scriptFile = './parameters/example-one-parameters.bicepparam'
+    }
+    elseif ($example -eq 2) {
+        $scriptFile = './parameters/example-two-parameters.bicepparam'
+    }
+    else {
+        Write-Host 'Incorrect example.'
+        return
+    }
+
     az group create -l $primaryRegion -n $resourceGroup
 
     az deployment group create `
         --name main-deployment `
         --resource-group $resourceGroup `
         --template-file ./main.bicep `
-        --parameters ./parameters/example-one-parameters.bicepparam `
+        --parameters $scriptFile `
         --parameters primaryRegion=$primaryRegion `
         --parameters myIpAddress=$publicIpAddress;
 }

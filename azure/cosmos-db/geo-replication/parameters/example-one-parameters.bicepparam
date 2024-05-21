@@ -5,8 +5,8 @@ param primaryRegion = ''
 
 var enableFreeTier = true // This can only be enabled once per subscription.
 
-var accountThroughput = 2000
-var containerThroughput = 400
+var accountThroughput = 1000
+var containerThroughput = 1000
 var databaseThroughput = null
 
 var consistencyPolicy = {
