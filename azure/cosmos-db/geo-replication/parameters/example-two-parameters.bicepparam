@@ -5,12 +5,9 @@ param primaryRegion = ''
 
 var enableFreeTier = true // This can only be enabled once per subscription.
 
-var accountThroughput = 2000
-var containerThroughput = 400
-var databaseThroughput = null
-
 var consistencyPolicy = {
-  defaultConsistencyLevel: 'Strong'
+  // defaultConsistencyLevel: 'Strong'
+  defaultConsistencyLevel: 'ConsistentPrefix'
   maxIntervalInSeconds: 0
   maxStalenessPrefix: 0
 }
@@ -19,6 +16,26 @@ var regions = [
   {
     failoverPriority: 0
     locationName: primaryRegion
+    isZoneRedundant: false
+  }
+  {
+    failoverPriority: 1
+    locationName: 'westus'
+    isZoneRedundant: false
+  }
+  // {
+  //   failoverPriority: 1
+  //   locationName: 'westus3'
+  //   isZoneRedundant: true
+  // }
+  // {
+  //   failoverPriority: 2
+  //   locationName: 'centralus'
+  //   isZoneRedundant: false
+  // }
+  {
+    failoverPriority: 3
+    locationName: 'southcentralus'
     isZoneRedundant: false
   }
 ]
@@ -107,10 +124,42 @@ param workspaceDiagnosticSettings = {
   ]
 }
 
+var machinesCounter = {
+  name: 'Machines'
+  autoscaleSettings: null
+  throughput: 400
+  defaultTtl: -1
+
+  materializedViewDefinition: {}
+  restoreParameters: []
+  partitionKey: {
+    paths: [
+      '/machineName'
+    ]
+    kind: 'Hash'
+  }
+  uniqueKeyPolicy: {}
+  indexingPolicy: {
+    indexingMode: 'consistent'
+    includedPaths: [
+      {
+        path: '/machineName/?'
+      }
+    ]
+    excludedPaths: [
+      {
+        path: '/*'
+      }
+    ]
+    compositeIndexes: []
+    spatialIndexes: []
+  }
+}
+
 var addressesContainer = {
   name: 'Addresses'
   autoscaleSettings: null
-  throughput: containerThroughput
+  throughput: 400
   defaultTtl: -1
 
   materializedViewDefinition: {}
@@ -179,7 +228,7 @@ param cosmosAccount = {
   }
 
   capacity: {
-    totalThroughputLimit: accountThroughput
+    totalThroughputLimit: 2000
   }
 
   regions: regions
@@ -195,10 +244,11 @@ param cosmosAccount = {
     createMode: 'Default'
     restoreParameters: null
     autoscaleSettings: null
-    throughput: databaseThroughput
+    throughput: null
   }
 
   containers: [
-    addressesContainer
+    machinesCounter
+    // addressesContainer
   ]
 }
