@@ -230,12 +230,12 @@ param vNets = [
     name: '${primaryVmRegion}-vm-vnet'
     region: primaryVmRegion
     addressPrefixes: [
-      '192.168.100.0/24'
+      '10.0.100.0/24'
     ]
     subnets: [
       {
         name: '${primaryVmRegion}-vm-subnet'
-        addressPrefix: '192.168.100.0/24'
+        addressPrefix: '10.0.100.0/24'
         privateEndpointNetworkPolicies: 'Disabled'
         privateLinkServiceNetworkPolicies: 'Disabled'
       }
@@ -287,7 +287,7 @@ param virtualMachines = [
           name: '${primaryVmRegion}-vm-configuration'
           primary: true
           privateIPAllocationMethod: 'Static'
-          privateIPAddress: '10.0.200.4'
+          privateIPAddress: '10.0.100.4'
           privateIPAddressVersion: 'IPv4'
           publicIpAddressDeleteOption: 'Delete'
           vNet: {
