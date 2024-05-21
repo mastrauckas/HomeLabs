@@ -12,9 +12,6 @@ If ($defaultSubscription -eq $developmentSubscriptionId) {
     if ($example -eq 1) {
         $scriptFile = './parameters/example-one-parameters.bicepparam'
     }
-    elseif ($example -eq 2) {
-        $scriptFile = './parameters/example-two-parameters.bicepparam'
-    }
     else {
         Write-Host 'Incorrect example.'
         return

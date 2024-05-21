@@ -3,14 +3,16 @@ using '../main.bicep'
 param myIpAddress = ''
 param primaryRegion = ''
 
-var enableFreeTier = true // This can only be enabled once per subscription.
+var primaryVmRegion = primaryRegion
 
-var accountThroughput = 1000
-var containerThroughput = 1000
+var enableFreeTier = true // This can only be enabled once per subscription.
+var accountThroughput = 2000
+var containerThroughput = 400
 var databaseThroughput = null
 
 var consistencyPolicy = {
-  defaultConsistencyLevel: 'Strong'
+  // defaultConsistencyLevel: 'Strong'
+  defaultConsistencyLevel: 'ConsistentPrefix'
   maxIntervalInSeconds: 0
   maxStalenessPrefix: 0
 }
@@ -19,6 +21,26 @@ var regions = [
   {
     failoverPriority: 0
     locationName: primaryRegion
+    isZoneRedundant: false
+  }
+  {
+    failoverPriority: 1
+    locationName: 'westus'
+    isZoneRedundant: false
+  }
+  // {
+  //   failoverPriority: 1
+  //   locationName: 'westus3'
+  //   isZoneRedundant: true
+  // }
+  // {
+  //   failoverPriority: 2
+  //   locationName: 'centralus'
+  //   isZoneRedundant: false
+  // }
+  {
+    failoverPriority: 3
+    locationName: 'southcentralus'
     isZoneRedundant: false
   }
 ]
@@ -107,8 +129,8 @@ param workspaceDiagnosticSettings = {
   ]
 }
 
-var addressesContainer = {
-  name: 'Addresses'
+var machinesCounter = {
+  name: 'Machines'
   autoscaleSettings: null
   throughput: containerThroughput
   defaultTtl: -1
@@ -117,7 +139,7 @@ var addressesContainer = {
   restoreParameters: []
   partitionKey: {
     paths: [
-      '/customerId'
+      '/machineName'
     ]
     kind: 'Hash'
   }
@@ -126,7 +148,7 @@ var addressesContainer = {
     indexingMode: 'consistent'
     includedPaths: [
       {
-        path: '/customerId/?'
+        path: '/machineName/?'
       }
     ]
     excludedPaths: [
@@ -134,18 +156,7 @@ var addressesContainer = {
         path: '/*'
       }
     ]
-    compositeIndexes: [
-      [
-        {
-          path: '/customerId'
-          order: 'ascending'
-        }
-        {
-          path: '/isSent'
-          order: 'ascending'
-        }
-      ]
-    ]
+    compositeIndexes: []
     spatialIndexes: []
   }
 }
@@ -199,6 +210,76 @@ param cosmosAccount = {
   }
 
   containers: [
-    addressesContainer
+    machinesCounter
   ]
 }
+
+param virtualMachines = [
+  {
+    name: 'site-two-server-vm'
+    region: primaryVmRegion
+    adminUserName: 'michael'
+    adminPassword: 'Testing12345$'
+    computerName: 'dns-server-vm'
+    timeZone: 'US Eastern Standard Time'
+    licenseType: 'Windows_Server'
+    publisher: 'MicrosoftWindowsServer'
+    offer: 'WindowsServer'
+    sku: '2022-datacenter-azure-edition'
+    version: 'latest'
+    vmSize: 'Standard_DS1_v2'
+    okDiskName: 'site-two-server-vm-machine-os-disk'
+    caching: 'ReadWrite'
+    createOption: 'FromImage'
+    storageAccountType: 'Premium_LRS'
+    diskSizeGB: 128
+    networkInterface: {
+      name: 'site-two-server-vm-nic'
+      dnsServers: [
+        '10.0.200.4'
+      ]
+      internalDnsNameLabel: null
+      networkSecurityGroup: {
+        name: 'site-two-server-public-ip-address-nsg'
+        rules: [
+          {
+            name: 'Allow-RDP-All'
+            direction: 'Inbound'
+            priority: 100
+            access: 'Allow'
+            destinationPortRange: '3389'
+            protocol: 'Tcp'
+            sourcePortRange: '*'
+            sourceAddressPrefix: '*'
+            destinationAddressPrefix: '*'
+          }
+        ]
+      }
+      ipConfigurations: [
+        {
+          name: 'site-two-ip-configuration'
+          primary: true
+          privateIPAllocationMethod: 'Static'
+          privateIPAddress: '10.0.200.4'
+          privateIPAddressVersion: 'IPv4'
+          publicIpAddressDeleteOption: 'Delete'
+          vNet: {
+            name: 'site-two-vnet'
+            subnetName: 'site-two-vm-subnet'
+            region: 'eastus'
+          }
+          publicIpAddress: {
+            name: 'site-two-server-vm-ip-address'
+            version: 'IPv4'
+            allocationMethod: 'Static'
+            sku: 'Standard'
+            tier: 'Regional'
+          }
+        }
+      ]
+    }
+    zones: [
+      '1'
+    ]
+  }
+]
