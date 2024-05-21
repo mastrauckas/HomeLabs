@@ -3,13 +3,6 @@ using '../main.bicep'
 param myIpAddress = ''
 param primaryRegion = ''
 
-var primaryVmRegion = primaryRegion
-
-var enableFreeTier = true // This can only be enabled once per subscription.
-var accountThroughput = 2000
-var containerThroughput = 400
-var databaseThroughput = null
-
 var consistencyPolicy = {
   // defaultConsistencyLevel: 'Strong'
   defaultConsistencyLevel: 'ConsistentPrefix'
@@ -17,33 +10,107 @@ var consistencyPolicy = {
   maxStalenessPrefix: 0
 }
 
-var regions = [
+var cosmosRegions = [
   {
     failoverPriority: 0
-    locationName: 'westus'
+    locationName: primaryRegion
     isZoneRedundant: false
   }
   {
     failoverPriority: 1
-    locationName: primaryRegion
+    locationName: 'centralus'
+    isZoneRedundant: false
+  }
+  {
+    failoverPriority: 2
+    locationName: 'westus3'
+    isZoneRedundant: false
+  }
+  {
+    failoverPriority: 3
+    locationName: 'northeurope'
+    isZoneRedundant: false
+  }
+  {
+    failoverPriority: 4
+    locationName: 'uksouth'
+    isZoneRedundant: false
+  }
+  {
+    failoverPriority: 5
+    locationName: 'swedencentral'
     isZoneRedundant: false
   }
   // {
   //   failoverPriority: 1
-  //   locationName: 'westus3'
+  //   locationName: 
   //   isZoneRedundant: true
   // }
   // {
   //   failoverPriority: 2
-  //   locationName: 'centralus'
+  //   locationName: 'southcentralus'
   //   isZoneRedundant: false
   // }
-  {
-    failoverPriority: 3
-    locationName: 'southcentralus'
-    isZoneRedundant: false
-  }
 ]
+
+// param ipAddresses = regionResourceTemplates.ipAddressesTemplate
+
+// param ipAddresses = []
+//   {
+//     name: '${primaryVmRegion}-vm-ip-address'
+//     region: primaryVmRegion
+//     version: 'IPv4'
+//     allocationMethod: 'Static'
+//     sku: 'Standard'
+//     tier: 'Regional'
+//   }
+//   {
+//     name: 'southcentralus-vm-ip-address'
+//     region: 'southcentralus'
+//     version: 'IPv4'
+//     allocationMethod: 'Static'
+//     sku: 'Standard'
+//     tier: 'Regional'
+//   }
+//   {
+//     name: 'westus3-vm-ip-address'
+//     region: 'westus3'
+//     version: 'IPv4'
+//     allocationMethod: 'Static'
+//     sku: 'Standard'
+//     tier: 'Regional'
+//   }
+//   {
+//     name: 'northeurope-vm-ip-address'
+//     region: 'northeurope'
+//     version: 'IPv4'
+//     allocationMethod: 'Static'
+//     sku: 'Standard'
+//     tier: 'Regional'
+//   }
+//   {
+//     name: 'westeurope-vm-ip-address'
+//     region: 'westeurope'
+//     version: 'IPv4'
+//     allocationMethod: 'Static'
+//     sku: 'Standard'
+//     tier: 'Regional'
+//   }
+//   {
+//     name: 'swedencentral-vm-ip-address'
+//     region: 'swedencentral'
+//     version: 'IPv4'
+//     allocationMethod: 'Static'
+//     sku: 'Standard'
+//     tier: 'Regional'
+//   }
+// ]
+
+var enableFreeTier = true // This can only be enabled once per subscription.
+
+var containerThroughput = 400
+var accountThroughput = length(cosmosRegions) * containerThroughput
+var databaseThroughput = null
 
 // Whitelist my ip addres and the Azure Portals IP Addresses.
 // Shows Portals IP Addresses https://learn.microsoft.com/en-us/azure/cosmos-db/how-to-configure-firewall#allow-requests-from-the-azure-portal
@@ -193,7 +260,7 @@ param cosmosAccount = {
     totalThroughputLimit: accountThroughput
   }
 
-  regions: regions
+  regions: cosmosRegions
 
   capabilities: []
 
@@ -214,99 +281,131 @@ param cosmosAccount = {
   ]
 }
 
-param ipAddresses = [
-  {
-    name: '${primaryVmRegion}-vm-ip-address'
-    region: primaryVmRegion
-    version: 'IPv4'
-    allocationMethod: 'Static'
-    sku: 'Standard'
-    tier: 'Regional'
-  }
-]
+param vNets = map(cosmosRegions, (cosmosRegion, index) => {
+  name: '${cosmosRegion.locationName}-vm-vnet'
+  region: cosmosRegion.locationName
+  addressPrefixes: [
+    '10.0.${1 * (index + 1)}.0/24'
+  ]
+  subnets: [
+    {
+      name: '${cosmosRegion.locationName}-vm-subnet'
+      addressPrefix: '10.0.${1 * (index + 1)}.0/24'
+      privateEndpointNetworkPolicies: 'Disabled'
+      privateLinkServiceNetworkPolicies: 'Disabled'
+    }
+  ]
+})
 
-param vNets = [
-  {
-    name: '${primaryVmRegion}-vm-vnet'
-    region: primaryVmRegion
-    addressPrefixes: [
-      '10.0.100.0/24'
-    ]
-    subnets: [
-      {
-        name: '${primaryVmRegion}-vm-subnet'
-        addressPrefix: '10.0.100.0/24'
-        privateEndpointNetworkPolicies: 'Disabled'
-        privateLinkServiceNetworkPolicies: 'Disabled'
-      }
-    ]
-  }
-]
+param ipAddresses = map(cosmosRegions, cosmosRegion => {
+  name: '${cosmosRegion.locationName}-vm-ip-address'
+  region: cosmosRegion.locationName
+  version: 'IPv4'
+  allocationMethod: 'Static'
+  sku: 'Standard'
+  tier: 'Regional'
+})
 
-param virtualMachines = [
-  {
-    name: '${primaryVmRegion}-vm'
-    region: primaryVmRegion
-    adminUserName: 'michael'
-    adminPassword: 'Testing12345$'
-    computerName: '${primaryVmRegion}-vm'
-    timeZone: 'US Eastern Standard Time'
-    licenseType: 'Windows_Server'
-    publisher: 'MicrosoftWindowsServer'
-    offer: 'WindowsServer'
-    sku: '2022-datacenter-azure-edition'
-    version: 'latest'
-    vmSize: 'Standard_DS1_v2'
-    okDiskName: '${primaryVmRegion}-vm-disk'
-    caching: 'ReadWrite'
-    createOption: 'FromImage'
-    storageAccountType: 'Premium_LRS'
-    diskSizeGB: 128
-    networkInterface: {
-      name: '${primaryVmRegion}-vm-nic'
-      dnsServers: []
-      internalDnsNameLabel: null
-      networkSecurityGroup: {
-        name: '${primaryVmRegion}-vm-nsg'
-        rules: [
-          {
-            name: 'Allow-RDP-All'
-            direction: 'Inbound'
-            priority: 100
-            access: 'Allow'
-            destinationPortRange: '3389'
-            protocol: 'Tcp'
-            sourcePortRange: '*'
-            sourceAddressPrefix: '*'
-            destinationAddressPrefix: '*'
-          }
-        ]
-      }
-      ipConfigurations: [
+param vms = map(cosmosRegions, (cosmosRegion, index) => {
+  name: '${cosmosRegion.locationName}-vm'
+  region: cosmosRegion.locationName
+  adminUserName: 'michael'
+  adminPassword: 'Testing12345$'
+  computerName: 'vm-${index}'
+  timeZone: 'US Eastern Standard Time'
+  licenseType: 'Windows_Server'
+  publisher: 'MicrosoftWindowsServer'
+  offer: 'WindowsServer'
+  sku: '2022-datacenter-azure-edition'
+  version: 'latest'
+  vmSize: 'Standard_DS1_v2'
+  okDiskName: '${cosmosRegion.locationName}-vm-disk'
+  caching: 'ReadWrite'
+  createOption: 'FromImage'
+  storageAccountType: 'Premium_LRS'
+  diskSizeGB: 128
+  networkInterface: {
+    name: '${cosmosRegion.locationName}-vm-nic'
+    dnsServers: []
+    internalDnsNameLabel: null
+    networkSecurityGroup: {
+      name: '${cosmosRegion.locationName}-vm-nsg'
+      rules: [
         {
-          name: '${primaryVmRegion}-vm-configuration'
-          primary: true
-          privateIPAllocationMethod: 'Static'
-          privateIPAddress: '10.0.100.4'
-          privateIPAddressVersion: 'IPv4'
-          publicIpAddressDeleteOption: 'Delete'
-          vNet: {
-            name: '${primaryVmRegion}-vm-vnet'
-            subnetName: '${primaryVmRegion}-vm-subnet'
-            region: primaryVmRegion
-          }
-          publicIpAddress: {
-            name: '${primaryVmRegion}-vm-ip-address'
-            version: 'IPv4'
-            allocationMethod: 'Static'
-            sku: 'Standard'
-            tier: 'Regional'
-          }
+          name: 'Allow-RDP-All'
+          direction: 'Inbound'
+          priority: 100
+          access: 'Allow'
+          destinationPortRange: '3389'
+          protocol: 'Tcp'
+          sourcePortRange: '*'
+          sourceAddressPrefix: '*'
+          destinationAddressPrefix: '*'
         }
       ]
     }
-    zones: [
-      '1'
+    ipConfigurations: [
+      {
+        name: '${cosmosRegion.locationName}-vm-configuration'
+        primary: true
+        privateIPAllocationMethod: 'Dynamic'
+        privateIPAddress: null
+        privateIPAddressVersion: 'IPv4'
+        publicIpAddressDeleteOption: 'Delete'
+        vNet: {
+          name: '${cosmosRegion.locationName}-vm-vnet'
+          subnetName: '${cosmosRegion.locationName}-vm-subnet'
+          region: cosmosRegion.locationName
+        }
+        publicIpAddress: {
+          name: '${cosmosRegion.locationName}-vm-ip-address'
+          version: 'IPv4'
+          allocationMethod: 'Static'
+          sku: 'Standard'
+          tier: 'Regional'
+        }
+      }
     ]
   }
-]
+  zones: [
+    '1'
+  ]
+})
+
+param privateEndpoints = map(vNets, vNet => {
+  name: 'vm-k8s-cosmos-${vNet.region}-private-endpoint'
+  vNetName: vNet.name
+  subnetName: vNet.subnets[0]
+  region: vNet.region
+
+  ipConfigurations: []
+
+  customNetworkInterfaceName: 'vm-k8s-cosmos-${vNet.region}-private-endpoint-nic'
+
+  privateLinkServiceConnections: [
+    {
+      name: 'vm-k8s-cosmos-${vNet.region}-private-endpoint-${vNet.region}-link-connection'
+      groupIds: [
+        'Sql'
+      ]
+    }
+  ]
+
+  privateDnsZone: {
+    name: 'privatelink.documents.azure.com'
+
+    privateDnsZonGroups: [
+      {
+        name: 'vm-k8s-cosmos-${vNet.region}-private-endpoint-zone-group'
+        privateDnsZoneConfigName: 'vm-k8s-zone-group-configuration-${vNet.region}'
+      }
+    ]
+  }
+
+  privateDnsVNetLinks: [
+    {
+      name: 'vm-k8s-cosmos-private-dns-zone-link'
+      registrationEnabled: false
+    }
+  ]
+})

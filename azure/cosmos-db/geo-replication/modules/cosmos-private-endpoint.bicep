@@ -1,6 +1,5 @@
 param privateEndpoint object
 param cosmosAccountName string
-param cosmosAccountResourceGroup string
 
 resource VNet 'Microsoft.Network/virtualNetworks@2023-04-01' existing = {
   name: privateEndpoint.vNetName
@@ -8,7 +7,6 @@ resource VNet 'Microsoft.Network/virtualNetworks@2023-04-01' existing = {
 
 resource CosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' existing = {
   name: cosmosAccountName
-  scope: resourceGroup(cosmosAccountResourceGroup)
 }
 
 resource PrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {

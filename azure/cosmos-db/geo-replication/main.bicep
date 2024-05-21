@@ -2,9 +2,10 @@ param tags object
 param cosmosAccount object
 param workspace object
 param workspaceDiagnosticSettings object
-param ipAddresses array
+param ipAddresses object[]
 param vNets array
-param virtualMachines array
+param vms array
+param privateEndpoints array
 
 #disable-next-line no-unused-params
 param myIpAddress string
@@ -92,8 +93,22 @@ module VNetDeployments 'modules/vnet.bicep' = [
   }
 ]
 
+module PriveLinkDeployments 'modules/cosmos-private-endpoint.bicep' = [
+  for privateEndpoint in privateEndpoints: {
+    name: '${privateEndpoint.name}-private-link-deployment'
+    params: {
+      privateEndpoint: privateEndpoint
+      cosmosAccountName: cosmosAccount.name
+    }
+    dependsOn: [
+      VNetDeployments
+      CosmosAcccountDeployment
+    ]
+  }
+]
+
 module VmDeployments 'modules/vm.bicep' = [
-  for virtualMachine in virtualMachines: {
+  for virtualMachine in vms: {
     name: '${virtualMachine.name}-deployment'
     params: {
       location: virtualMachine.region
