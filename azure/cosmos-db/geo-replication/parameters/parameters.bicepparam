@@ -20,12 +20,12 @@ var consistencyPolicy = {
 var regions = [
   {
     failoverPriority: 0
-    locationName: primaryRegion
+    locationName: 'westus'
     isZoneRedundant: false
   }
   {
     failoverPriority: 1
-    locationName: 'westus'
+    locationName: primaryRegion
     isZoneRedundant: false
   }
   // {
@@ -214,13 +214,42 @@ param cosmosAccount = {
   ]
 }
 
+param ipAddresses = [
+  {
+    name: '${primaryVmRegion}-vm-ip-address'
+    region: primaryVmRegion
+    version: 'IPv4'
+    allocationMethod: 'Static'
+    sku: 'Standard'
+    tier: 'Regional'
+  }
+]
+
+param vNets = [
+  {
+    name: '${primaryVmRegion}-vm-vnet'
+    region: primaryVmRegion
+    addressPrefixes: [
+      '192.168.100.0/24'
+    ]
+    subnets: [
+      {
+        name: '${primaryVmRegion}-vm-subnet'
+        addressPrefix: '192.168.100.0/24'
+        privateEndpointNetworkPolicies: 'Disabled'
+        privateLinkServiceNetworkPolicies: 'Disabled'
+      }
+    ]
+  }
+]
+
 param virtualMachines = [
   {
-    name: 'site-two-server-vm'
+    name: '${primaryVmRegion}-vm'
     region: primaryVmRegion
     adminUserName: 'michael'
     adminPassword: 'Testing12345$'
-    computerName: 'dns-server-vm'
+    computerName: '${primaryVmRegion}-vm'
     timeZone: 'US Eastern Standard Time'
     licenseType: 'Windows_Server'
     publisher: 'MicrosoftWindowsServer'
@@ -228,19 +257,17 @@ param virtualMachines = [
     sku: '2022-datacenter-azure-edition'
     version: 'latest'
     vmSize: 'Standard_DS1_v2'
-    okDiskName: 'site-two-server-vm-machine-os-disk'
+    okDiskName: '${primaryVmRegion}-vm-disk'
     caching: 'ReadWrite'
     createOption: 'FromImage'
     storageAccountType: 'Premium_LRS'
     diskSizeGB: 128
     networkInterface: {
-      name: 'site-two-server-vm-nic'
-      dnsServers: [
-        '10.0.200.4'
-      ]
+      name: '${primaryVmRegion}-vm-nic'
+      dnsServers: []
       internalDnsNameLabel: null
       networkSecurityGroup: {
-        name: 'site-two-server-public-ip-address-nsg'
+        name: '${primaryVmRegion}-vm-nsg'
         rules: [
           {
             name: 'Allow-RDP-All'
@@ -257,19 +284,19 @@ param virtualMachines = [
       }
       ipConfigurations: [
         {
-          name: 'site-two-ip-configuration'
+          name: '${primaryVmRegion}-vm-configuration'
           primary: true
           privateIPAllocationMethod: 'Static'
           privateIPAddress: '10.0.200.4'
           privateIPAddressVersion: 'IPv4'
           publicIpAddressDeleteOption: 'Delete'
           vNet: {
-            name: 'site-two-vnet'
-            subnetName: 'site-two-vm-subnet'
-            region: 'eastus'
+            name: '${primaryVmRegion}-vm-vnet'
+            subnetName: '${primaryVmRegion}-vm-subnet'
+            region: primaryVmRegion
           }
           publicIpAddress: {
-            name: 'site-two-server-vm-ip-address'
+            name: '${primaryVmRegion}-vm-ip-address'
             version: 'IPv4'
             allocationMethod: 'Static'
             sku: 'Standard'

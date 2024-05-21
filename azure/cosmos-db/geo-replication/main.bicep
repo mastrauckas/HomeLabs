@@ -2,6 +2,8 @@ param tags object
 param cosmosAccount object
 param workspace object
 param workspaceDiagnosticSettings object
+param ipAddresses array
+param vNets array
 param virtualMachines array
 
 #disable-next-line no-unused-params
@@ -57,7 +59,40 @@ module CosmosContainerDeployment './modules/cosmos-container.bicep' = [
   }
 ]
 
-module VmDeployment 'modules/vm.bicep' = [
+module VpnIpAddress './modules/ip-address.bicep' = [
+  for ipAddress in ipAddresses: {
+    name: '${ipAddress.name}-deployment'
+    params: {
+      location: ipAddress.region
+      tags: tags
+
+      name: ipAddress.name
+      version: ipAddress.version
+      allocationMethod: ipAddress.allocationMethod
+      sku: ipAddress.sku
+      tier: ipAddress.tier
+    }
+  }
+]
+
+module VNetDeployments 'modules/vnet.bicep' = [
+  for vnet in vNets: {
+    name: '${vnet.name}-deployment'
+    params: {
+      location: vnet.region
+      tags: tags
+
+      vNetName: vnet.name
+      addressPrefixes: vnet.addressPrefixes
+      subnets: vnet.subnets
+    }
+    dependsOn: [
+      VpnIpAddress
+    ]
+  }
+]
+
+module VmDeployments 'modules/vm.bicep' = [
   for virtualMachine in virtualMachines: {
     name: '${virtualMachine.name}-deployment'
     params: {
@@ -87,5 +122,9 @@ module VmDeployment 'modules/vm.bicep' = [
 
       networkInterface: virtualMachine.networkInterface
     }
+    dependsOn: [
+      VpnIpAddress
+      VNetDeployments
+    ]
   }
 ]

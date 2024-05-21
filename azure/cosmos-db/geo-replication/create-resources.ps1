@@ -23,7 +23,7 @@ If ($defaultSubscription -eq $developmentSubscriptionId) {
         --name main-deployment `
         --resource-group $resourceGroup `
         --template-file ./main.bicep `
-        --parameters $scriptFile `
+        --parameters ./parameters/parameters.bicepparam `
         --parameters primaryRegion=$primaryRegion `
         --parameters myIpAddress=$publicIpAddress;
 }
