@@ -10,6 +10,8 @@ var consistencyPolicy = {
   maxStalenessPrefix: 0
 }
 
+var enableMultipleWriteLocations = false
+
 var cosmosRegions = [
   {
     failoverPriority: 0
@@ -184,7 +186,7 @@ param cosmosAccount = {
   enableAnalyticalStorage: false
   enableAutomaticFailover: false
   minimalTlsVersion: 'Tls12'
-  enableMultipleWriteLocations: false
+  enableMultipleWriteLocations: enableMultipleWriteLocations
   enableFreeTier: enableFreeTier
   disableKeyBasedMetadataWriteAccess: true
 
