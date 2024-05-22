@@ -53,59 +53,6 @@ var cosmosRegions = [
   // }
 ]
 
-// param ipAddresses = regionResourceTemplates.ipAddressesTemplate
-
-// param ipAddresses = []
-//   {
-//     name: '${primaryVmRegion}-vm-ip-address'
-//     region: primaryVmRegion
-//     version: 'IPv4'
-//     allocationMethod: 'Static'
-//     sku: 'Standard'
-//     tier: 'Regional'
-//   }
-//   {
-//     name: 'southcentralus-vm-ip-address'
-//     region: 'southcentralus'
-//     version: 'IPv4'
-//     allocationMethod: 'Static'
-//     sku: 'Standard'
-//     tier: 'Regional'
-//   }
-//   {
-//     name: 'westus3-vm-ip-address'
-//     region: 'westus3'
-//     version: 'IPv4'
-//     allocationMethod: 'Static'
-//     sku: 'Standard'
-//     tier: 'Regional'
-//   }
-//   {
-//     name: 'northeurope-vm-ip-address'
-//     region: 'northeurope'
-//     version: 'IPv4'
-//     allocationMethod: 'Static'
-//     sku: 'Standard'
-//     tier: 'Regional'
-//   }
-//   {
-//     name: 'westeurope-vm-ip-address'
-//     region: 'westeurope'
-//     version: 'IPv4'
-//     allocationMethod: 'Static'
-//     sku: 'Standard'
-//     tier: 'Regional'
-//   }
-//   {
-//     name: 'swedencentral-vm-ip-address'
-//     region: 'swedencentral'
-//     version: 'IPv4'
-//     allocationMethod: 'Static'
-//     sku: 'Standard'
-//     tier: 'Regional'
-//   }
-// ]
-
 var enableFreeTier = true // This can only be enabled once per subscription.
 
 var containerThroughput = 400
