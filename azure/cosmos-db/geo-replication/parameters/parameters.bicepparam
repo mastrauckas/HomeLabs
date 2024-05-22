@@ -232,12 +232,12 @@ param vNets = map(cosmosRegions, (cosmosRegion, index) => {
   name: '${cosmosRegion.locationName}-vm-vnet'
   region: cosmosRegion.locationName
   addressPrefixes: [
-    '10.0.${1 * (index + 1)}.0/24'
+    '10.0.${21 * (index + 1)}.0/24'
   ]
   subnets: [
     {
       name: '${cosmosRegion.locationName}-vm-subnet'
-      addressPrefix: '10.0.${1 * (index + 1)}.0/24'
+      addressPrefix: '10.0.${21 * (index + 1)}.0/24'
       privateEndpointNetworkPolicies: 'Disabled'
       privateLinkServiceNetworkPolicies: 'Disabled'
     }
