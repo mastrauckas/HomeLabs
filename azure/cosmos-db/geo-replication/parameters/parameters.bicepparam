@@ -375,7 +375,7 @@ param vms = map(cosmosRegions, (cosmosRegion, index) => {
 param privateEndpoints = map(vNets, vNet => {
   name: 'vm-k8s-cosmos-${vNet.region}-private-endpoint'
   vNetName: vNet.name
-  subnetName: vNet.subnets[0]
+  subnetName: vNet.subnets[0].name
   region: vNet.region
 
   ipConfigurations: []
@@ -384,7 +384,7 @@ param privateEndpoints = map(vNets, vNet => {
 
   privateLinkServiceConnections: [
     {
-      name: 'vm-k8s-cosmos-${vNet.region}-private-endpoint-${vNet.region}-link-connection'
+      name: 'vm-k8s-cosmos-${vNet.region}-private-endpoint-link-connection'
       groupIds: [
         'Sql'
       ]

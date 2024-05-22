@@ -39,9 +39,8 @@ resource PrivateEndpoint 'Microsoft.Network/privateEndpoints@2023-04-01' = {
   }
 }
 
-resource PrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' = {
+resource PrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: privateEndpoint.privateDnsZone.name
-  location: 'Global'
 }
 
 resource PrivateEndpointDnsGroups 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2023-04-01' = [

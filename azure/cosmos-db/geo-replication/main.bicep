@@ -93,20 +93,6 @@ module VNetDeployments 'modules/vnet.bicep' = [
   }
 ]
 
-module PriveLinkDeployments 'modules/cosmos-private-endpoint.bicep' = [
-  for privateEndpoint in privateEndpoints: {
-    name: '${privateEndpoint.name}-private-link-deployment'
-    params: {
-      privateEndpoint: privateEndpoint
-      cosmosAccountName: cosmosAccount.name
-    }
-    dependsOn: [
-      VNetDeployments
-      CosmosAcccountDeployment
-    ]
-  }
-]
-
 module VmDeployments 'modules/vm.bicep' = [
   for virtualMachine in vms: {
     name: '${virtualMachine.name}-deployment'
@@ -140,6 +126,28 @@ module VmDeployments 'modules/vm.bicep' = [
     dependsOn: [
       VpnIpAddress
       VNetDeployments
+    ]
+  }
+]
+
+module PrivateDnsZones './modules/privateDnsZones.bicep' = {
+  name: 'cosmos-dns-zone'
+  params: {
+    name: privateEndpoints[0].privateDnsZone.name
+  }
+}
+
+module PriveLinkDeployments 'modules/cosmos-private-endpoint.bicep' = [
+  for privateEndpoint in privateEndpoints: {
+    name: '${privateEndpoint.name}-private-link-deployment'
+    params: {
+      privateEndpoint: privateEndpoint
+      cosmosAccountName: cosmosAccount.name
+    }
+    dependsOn: [
+      PrivateDnsZones
+      VNetDeployments
+      CosmosAcccountDeployment
     ]
   }
 ]
