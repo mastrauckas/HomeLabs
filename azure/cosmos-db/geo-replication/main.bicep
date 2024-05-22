@@ -137,10 +137,10 @@ module PrivateDnsZones './modules/privateDnsZones.bicep' = {
   }
 }
 
-@batchSize(1)
+// @batchSize(1)
 module PriveLinkDeployments 'modules/cosmos-private-endpoint.bicep' = [
   for privateEndpoint in privateEndpoints: {
-    name: '${privateEndpoint.name}-private-link-deployment'
+    name: '${privateEndpoint.name}-pl-deployment'
     params: {
       privateEndpoint: privateEndpoint
       cosmosAccountName: cosmosAccount.name

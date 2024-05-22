@@ -327,11 +327,11 @@ param privateEndpoints = map(vNets, vNet => {
 
   ipConfigurations: []
 
-  customNetworkInterfaceName: 'vm-k8s-cosmos-${vNet.region}-private-endpoint-nic'
+  customNetworkInterfaceName: 'vm-cosmos-${vNet.region}-private-endpoint-nic'
 
   privateLinkServiceConnections: [
     {
-      name: 'vm-k8s-cosmos-${vNet.region}-private-endpoint-link-connection'
+      name: 'vm-cosmos-${vNet.region}-link-connection'
       groupIds: [
         'Sql'
       ]
@@ -343,15 +343,15 @@ param privateEndpoints = map(vNets, vNet => {
 
     privateDnsZonGroups: [
       {
-        name: 'vm-k8s-cosmos-${vNet.region}-private-endpoint-zone-group'
-        privateDnsZoneConfigName: 'vm-k8s-zone-group-configuration-${vNet.region}'
+        name: 'vm-cosmos-${vNet.region}-endpoint-zone-group'
+        privateDnsZoneConfigName: 'vm-configuration-${vNet.region}'
       }
     ]
   }
 
   privateDnsVNetLinks: [
     {
-      name: 'vm-k8s-cosmos-private-dns-zone-link'
+      name: 'vm-${vNet.region}-k8s-cosmos-private-link'
       registrationEnabled: false
     }
   ]
