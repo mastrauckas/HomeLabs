@@ -107,6 +107,13 @@ param workspaceDiagnosticSettings = {
   ]
 }
 
+param applicationInsights = {
+  name: 'cosmos-testing-db-application-insights'
+  region: primaryRegion
+  kind: 'cosmos-db'
+  applicationType: 'web'
+}
+
 var addressesContainer = {
   name: 'Addresses'
   autoscaleSettings: null
