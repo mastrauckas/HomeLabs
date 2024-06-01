@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: printdotnet8
+  labels:
+    app: printdotnet8
+    dotnet: v6.0
+spec:
+  replicas: 100
+  selector:
+    matchLabels:
+      app: printdotnet8
+  template:
+    metadata:
+      labels:
+        app: printdotnet8
+        dotnet: v6.0
+    spec:
+      containers:
+      - name: printdotnet8
+        image: mastrauckas/printdotnet6:v1.0
+  strategy:
+      type: RollingUpdate
+      rollingUpdate:
+        maxUnavailable: 100%
+        maxSurge: 100%

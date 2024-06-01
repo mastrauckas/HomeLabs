@@ -29,12 +29,3 @@ spec:
                 values:
                 - v6.0
             topologyKey: zone
-      # affinity:
-      #   podAffinity:
-      #     requiredDuringSchedulingIgnoredDuringExecution:
-      #     - labelSelector:
-      #         matchExpressions:
-      #         - key: region
-      #           operator: In
-      #           values:
-      #           - eastus
