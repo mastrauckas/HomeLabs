@@ -3,7 +3,7 @@ using '../main.bicep'
 param region = ''
 
 param tags = {
-  Project: 'PRJ00004A'
+  Project: 'Prometheus Built In'
   Purpose: 'Learning'
 }
 
@@ -11,8 +11,8 @@ param tags = {
 param managedKubeCluster = {
   name: 'aks-test-cluster-${region}'
   region: region
-  kubernetesVersion: '1.29.2'
-  dnsPrefix: 'maa-dns'
+  kubernetesVersion: '1.29.4'
+  dnsPrefix: 'dns-maa'
   sku: {
     name: 'Base'
     tier: 'Free'
@@ -35,21 +35,17 @@ param managedKubeCluster = {
       mode: 'System'
       count: 1 // This is how many nodes/vms to start with.
       minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
+      maxCount: 2 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
       messageOfTheDay: null
       vmSize: 'Standard_D2s_v3'
       osType: 'Linux'
       osDiskSizeGB: 30
       type: 'VirtualMachineScaleSets'
-      enableAutoScaling: true
+      enableAutoScaling: false
       scaleSetPriority: 'Regular' // Values Regular and Spot
       enableNodePublicIP: false
-      availabilityZones: [
-        '1'
-        '2'
-        '3'
-      ]
+      availabilityZones: ['1']
       tags: {}
       nodeLabels: {}
       nodeTaints: []
@@ -59,69 +55,17 @@ param managedKubeCluster = {
       mode: 'User'
       count: 1 // This is how many nodes/vms to start with.
       minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
+      maxCount: 2 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
       messageOfTheDay: null
       vmSize: 'Standard_B2s'
       osType: 'Linux'
       osDiskSizeGB: 30
       type: 'VirtualMachineScaleSets'
-      enableAutoScaling: true
+      enableAutoScaling: false
       scaleSetPriority: 'Regular' // Values Regular and Spot
       enableNodePublicIP: false
-      availabilityZones: [
-        '1'
-        '2'
-        '3'
-      ]
-      tags: {}
-      nodeLabels: {}
-      nodeTaints: ['dotnet=8.0:NoSchedule']
-    }
-    {
-      name: 'userpool2'
-      mode: 'User'
-      count: 1 // This is how many nodes/vms to start with.
-      minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
-      maxPods: 100
-      messageOfTheDay: null
-      vmSize: 'Standard_B2s'
-      osType: 'Linux'
-      osDiskSizeGB: 30
-      type: 'VirtualMachineScaleSets'
-      enableAutoScaling: true
-      scaleSetPriority: 'Regular' // Values Regular and Spot
-      enableNodePublicIP: false
-      availabilityZones: [
-        '1'
-        '2'
-        '3'
-      ]
-      tags: {}
-      nodeLabels: {}
-      nodeTaints: []
-    }
-    {
-      name: 'userpool3'
-      mode: 'User'
-      count: 1 // This is how many nodes/vms to start with.
-      minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
-      maxPods: 100
-      messageOfTheDay: null
-      vmSize: 'Standard_B2s'
-      osType: 'Linux'
-      osDiskSizeGB: 30
-      type: 'VirtualMachineScaleSets'
-      enableAutoScaling: true
-      scaleSetPriority: 'Regular' // Values Regular and Spot
-      enableNodePublicIP: false
-      availabilityZones: [
-        '1'
-        '2'
-        '3'
-      ]
+      availabilityZones: ['1']
       tags: {}
       nodeLabels: {}
       nodeTaints: []
