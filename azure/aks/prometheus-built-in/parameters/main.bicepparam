@@ -97,6 +97,8 @@ param dataCollectionRuleAssociations = {
 
 param dataCollectionRules = {
   name: 'prometheus-data-collecton-rule'
+  region: region
+  kind: 'Linux'
   dataSources: {
     prometheusForwarder: [
       {
@@ -108,19 +110,10 @@ param dataCollectionRules = {
       }
     ]
   }
-  destinations: null
-  // {
-  //   monitoringAccounts: [
-  //     {
-  //       name: 'MonitoringAccount1'
-  //       accountResourceId: null // Need to set the Azure Monitor Workspace Id.
-  //     }
-  //   ]
-  // }
   dataFlows: [
     {
       destinations: [
-        'MonitoringAccount1'
+        'MonitoringAccount'
       ]
       streams: [
         'Microsoft-PrometheusMetrics'

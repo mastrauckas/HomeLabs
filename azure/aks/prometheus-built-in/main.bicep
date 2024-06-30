@@ -8,13 +8,13 @@ param prometheusRuleGroups object[]
 #disable-next-line no-unused-params
 param region string
 
-module KubeDeployment './modules/aks.bicep' = {
-  name: 'KubeDeployment'
-  params: {
-    tags: tags
-    managedKubeCluster: managedKubeCluster
-  }
-}
+// module KubeDeployment './modules/aks.bicep' = {
+//   name: 'KubeDeployment'
+//   params: {
+//     tags: tags
+//     managedKubeCluster: managedKubeCluster
+//   }
+// }
 
 module AzureMonitorWorkspaceDepoyment './modules/azure-monitor-workspace.bicep' = {
   name: 'AzureMonitorWorkspaceDepoyment'
@@ -29,20 +29,57 @@ module PrometheusRuleGroupDeployments './modules/prometheus-rule-group.bicep' = 
     params: {
       tags: tags
       prometheusRuleGroups: prometheusRuleGroup
-      azureMonitorWorkspaceName: azureMonitorWorkspace.name
+      azureMonitorWorkspaceId: AzureMonitorWorkspaceDepoyment.outputs.id
       clusterName: managedKubeCluster.name
     }
     dependsOn: [
       AzureMonitorWorkspaceDepoyment
+      // KubeDeployment
     ]
   }
 ]
 
-// module DataCollectionEndpointsDeployment './modules/data-collection-endpoints.bicep' = {
-//   name: 'DataCollectionEndpointsDeployment'
-//   params: {
-//     dataCollectionEndpoints: dataCollectionEndpoints
-//   }
-// }
+module DataCollectionEndpointsDeployment './modules/data-collection-endpoints.bicep' = {
+  name: 'DataCollectionEndpointsDeployment'
+  params: {
+    tags: tags
+    dataCollectionEndpoints: dataCollectionEndpoints
+  }
+}
 
-// module DataCollectionRuleAssociationsDeployment './modules/data-collection-rule-associations.bicep' = {}
+var completeDataCollectionRules = union(dataCollectionRules, {
+  destinations: {
+    monitoringAccounts: [
+      {
+        name: 'MonitoringAccount'
+        accountResourceId: AzureMonitorWorkspaceDepoyment.outputs.id
+      }
+    ]
+  }
+})
+
+module DataCollectionRulesDeployment './modules/data-collection-rules.bicep' = {
+  name: 'DataCollectionRulesDeployment'
+  params: {
+    tags: tags
+    dataCollectionRules: completeDataCollectionRules
+  }
+
+  dependsOn: [
+    AzureMonitorWorkspaceDepoyment
+  ]
+}
+
+module DataCollectionRuleAssociationsDeployment './modules/data-collection-rule-associations.bicep' = {
+  name: 'DataCollectionRuleAssociationsDeployment'
+  params: {
+    dataCollectionRuleAssociation: dataCollectionRuleAssociations
+    dataCollectionEndpointName: dataCollectionEndpoints.name
+    dataCollectionRuleName: dataCollectionRules.name
+  }
+
+  dependsOn: [
+    DataCollectionEndpointsDeployment
+    DataCollectionRulesDeployment
+  ]
+}

@@ -1,11 +1,7 @@
 param tags object
 param prometheusRuleGroups object
-param azureMonitorWorkspaceName string
+param azureMonitorWorkspaceId string
 param clusterName string
-
-resource AzureMonitorWorkspace 'microsoft.monitor/accounts@2021-06-03-preview' existing = {
-  name: azureMonitorWorkspaceName
-}
 
 resource PrometheusRuleGroup 'Microsoft.AlertsManagement/prometheusRuleGroups@2021-07-22-preview' = {
   name: prometheusRuleGroups.name
@@ -18,7 +14,7 @@ resource PrometheusRuleGroup 'Microsoft.AlertsManagement/prometheusRuleGroups@20
     interval: prometheusRuleGroups.interval
     rules: prometheusRuleGroups.rules
     scopes: [
-      AzureMonitorWorkspace.id
+      azureMonitorWorkspaceId
     ]
   }
 }
