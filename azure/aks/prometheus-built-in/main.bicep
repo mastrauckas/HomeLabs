@@ -8,13 +8,13 @@ param prometheusRuleGroups object[]
 #disable-next-line no-unused-params
 param region string
 
-// module KubeDeployment './modules/aks.bicep' = {
-//   name: 'KubeDeployment'
-//   params: {
-//     tags: tags
-//     managedKubeCluster: managedKubeCluster
-//   }
-// }
+module KubeDeployment './modules/aks.bicep' = {
+  name: 'KubeDeployment'
+  params: {
+    tags: tags
+    managedKubeCluster: managedKubeCluster
+  }
+}
 
 module AzureMonitorWorkspaceDepoyment './modules/azure-monitor-workspace.bicep' = {
   name: 'AzureMonitorWorkspaceDepoyment'
@@ -34,7 +34,7 @@ module PrometheusRuleGroupDeployments './modules/prometheus-rule-group.bicep' = 
     }
     dependsOn: [
       AzureMonitorWorkspaceDepoyment
-      // KubeDeployment
+      KubeDeployment
     ]
   }
 ]
@@ -63,6 +63,7 @@ module DataCollectionRulesDeployment './modules/data-collection-rules.bicep' = {
   params: {
     tags: tags
     dataCollectionRules: completeDataCollectionRules
+    dataCollectionEndpointName: dataCollectionEndpoints.name
   }
 
   dependsOn: [
@@ -74,7 +75,7 @@ module DataCollectionRuleAssociationsDeployment './modules/data-collection-rule-
   name: 'DataCollectionRuleAssociationsDeployment'
   params: {
     dataCollectionRuleAssociation: dataCollectionRuleAssociations
-    dataCollectionEndpointName: dataCollectionEndpoints.name
+    aksCusterName: managedKubeCluster.name
     dataCollectionRuleName: dataCollectionRules.name
   }
 

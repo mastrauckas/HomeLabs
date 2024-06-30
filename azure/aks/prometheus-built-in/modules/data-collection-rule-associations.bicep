@@ -1,9 +1,9 @@
 param dataCollectionRuleAssociation object
-param dataCollectionEndpointName string
+param aksCusterName string
 param dataCollectionRuleName string
 
-resource DataCollectionEndpoints 'Microsoft.Insights/dataCollectionEndpoints@2022-06-01' existing = {
-  name: dataCollectionEndpointName
+resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' existing = {
+  name: aksCusterName
 }
 
 resource DataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01' existing = {
@@ -12,8 +12,8 @@ resource DataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
 
 resource DataCollectionRuleAssociations 'Microsoft.Insights/dataCollectionRuleAssociations@2022-06-01' = {
   name: dataCollectionRuleAssociation.name
+  scope: aks
   properties: {
-    dataCollectionEndpointId: DataCollectionEndpoints.id
     dataCollectionRuleId: DataCollectionRules.id
     description: dataCollectionRuleAssociation.description
   }
