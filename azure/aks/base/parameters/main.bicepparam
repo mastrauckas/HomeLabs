@@ -158,4 +158,5 @@ param managedKubeCluster = {
     dnsServiceIP: ''
   }
   supportPlan: 'KubernetesOfficial' // Values can be AKSLongTermSupport and KubernetesOfficial
+  azureMonitorProfile: null //Kube State Metrics for prometheus addon profile for the container service cluster
 }
