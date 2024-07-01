@@ -47,27 +47,26 @@ module DataCollectionEndpointsDeployment './modules/data-collection-endpoints.bi
   }
 }
 
-var completeDataCollectionRules = union(dataCollectionRules, {
-  destinations: {
-    monitoringAccounts: [
-      {
-        name: 'MonitoringAccount'
-        accountResourceId: AzureMonitorWorkspaceDepoyment.outputs.id
-      }
-    ]
-  }
-})
-
 module DataCollectionRulesDeployment './modules/data-collection-rules.bicep' = {
   name: 'DataCollectionRulesDeployment'
   params: {
     tags: tags
-    dataCollectionRules: completeDataCollectionRules
+    dataCollectionRules: union(dataCollectionRules, {
+      destinations: {
+        monitoringAccounts: [
+          {
+            name: 'MonitoringAccount'
+            accountResourceId: AzureMonitorWorkspaceDepoyment.outputs.id
+          }
+        ]
+      }
+    })
     dataCollectionEndpointName: dataCollectionEndpoints.name
   }
 
   dependsOn: [
     AzureMonitorWorkspaceDepoyment
+    DataCollectionEndpointsDeployment
   ]
 }
 
@@ -82,5 +81,6 @@ module DataCollectionRuleAssociationsDeployment './modules/data-collection-rule-
   dependsOn: [
     DataCollectionEndpointsDeployment
     DataCollectionRulesDeployment
+    KubeDeployment
   ]
 }

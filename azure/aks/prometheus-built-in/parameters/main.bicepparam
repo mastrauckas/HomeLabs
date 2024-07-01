@@ -75,6 +75,16 @@ param managedKubeCluster = {
     dnsServiceIP: ''
   }
   supportPlan: 'KubernetesOfficial' // Values can be AKSLongTermSupport and KubernetesOfficial
+  azureMonitorProfile: {
+    //Kube State Metrics for prometheus addon profile for the container service cluster
+    metrics: {
+      enabled: true
+      kubeStateMetrics: {
+        metricLabelsAllowlist: ''
+        metricAnnotationsAllowList: ''
+      }
+    }
+  }
 }
 
 // https://medium.com/microsoftazure/deploying-azure-managed-prometheus-with-azapi-ef17e15acac8

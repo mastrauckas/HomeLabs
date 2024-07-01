@@ -23,5 +23,6 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
     diskEncryptionSetID: managedKubeCluster.diskEncryptionSetID
     networkProfile: managedKubeCluster.networkProfile
     supportPlan: managedKubeCluster.supportPlan
+    azureMonitorProfile: managedKubeCluster.azureMonitorProfile
   }
 }
