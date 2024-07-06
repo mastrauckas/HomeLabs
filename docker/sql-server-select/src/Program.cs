@@ -26,8 +26,11 @@ if (reader.Read())
     var id = reader.GetInt32(reader.GetOrdinal("Id"));
     var name = reader.GetString(reader.GetOrdinal("Message"));
 
-    Console.WriteLine($"The most recent row is Id {id} and message {message}");
-
+    Console.WriteLine($"The most recent row is Id {id} and message '{message}'.");
+}
+else
+{
+    Console.WriteLine("No rows found.");
 }
 
 await connection.CloseAsync();
