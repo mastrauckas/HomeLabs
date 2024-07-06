@@ -7,6 +7,12 @@ param tags = {
   Purpose: 'Learning'
 }
 
+param userAssignedIdentities = [
+  'sql-insert-identity'
+  'sql-select-identity'
+]
+
+// https://github.com/Azure/bicep/issues/8497
 // https://learn.microsoft.com/en-us/azure/templates/microsoft.containerservice/2023-01-02-preview/managedclusters?pivots=deployment-language-bicep
 param managedKubeCluster = {
   name: 'aks-test-cluster-${region}'

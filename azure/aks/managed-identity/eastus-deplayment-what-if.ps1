@@ -1,5 +1,5 @@
 $region = 'eastus'
-$resourceGroup = "k8s-testing-cluster-$region-rg"
+$resourceGroup = "k8s-managed-identity-testing-$region-rg"
 
 az group create `
     --resource-group $resourceGroup `

@@ -1,5 +1,6 @@
 param tags object
 param managedKubeCluster object
+param userAssignedIdentities array
 #disable-next-line no-unused-params
 param region string
 
