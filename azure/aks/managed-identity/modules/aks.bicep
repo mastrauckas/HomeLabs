@@ -24,5 +24,7 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
     networkProfile: managedKubeCluster.networkProfile
     supportPlan: managedKubeCluster.supportPlan
     azureMonitorProfile: managedKubeCluster.azureMonitorProfile
+    oidcIssuerProfile: managedKubeCluster.oidcIssuerProfile
+    securityProfile: managedKubeCluster.securityProfile
   }
 }

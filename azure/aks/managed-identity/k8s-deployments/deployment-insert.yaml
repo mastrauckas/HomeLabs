@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sql-server-insert-config
+data:
+  ConnectionStrings__SqlConnectionString: "Server=maa-learning-sql-server.database.windows.net;Authentication=Active Directory Managed Identity;User Id=c8961dbf-4e68-4e79-ab26-3678b36d23ff;Database=LearningSandbox"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: c8961dbf-4e68-4e79-ab26-3678b36d23ff
+  name: sql-server-insert-service-account
+  namespace: default
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: "sql-server-insert"
+spec:
+  schedule: '*/1 * * * *'
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 10
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      parallelism: 1
+      template:
+        metadata:
+            labels:
+              azure.workload.identity/use: "true"  # Required. Only pods with this label can use workload identity.
+        spec:
+          serviceAccountName: sql-server-insert-service-account
+          containers:
+          - name: sql-server-insert
+            image: mastrauckas/sql-server-insert:v1.0
+            imagePullPolicy: Always
+            envFrom:
+            - configMapRef:
+                name: sql-server-insert-config
+          restartPolicy: Never

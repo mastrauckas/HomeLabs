@@ -80,4 +80,12 @@ param managedKubeCluster = {
   }
   supportPlan: 'KubernetesOfficial' // Values can be AKSLongTermSupport and KubernetesOfficial
   azureMonitorProfile: null //Kube State Metrics for prometheus addon profile for the container service cluster
+  oidcIssuerProfile: {
+    enabled: false
+  }
+  securityProfile: {
+    workloadIdentity: {
+      enabled: true
+    }
+  }
 }
