@@ -11,27 +11,17 @@ var configuration = builder.Build();
 var connectionString = configuration.GetConnectionString("SqlConnectionString");
 ArgumentNullException.ThrowIfNull(connectionString);
 
-Console.WriteLine("About to query database.");
+Console.WriteLine("Inserting a row into the database.");
 
 await using SqlConnection connection = new();
 connection.ConnectionString = connectionString;
 await connection.OpenAsync();
 var message = $"This message is from {Environment.MachineName} by user {Environment.UserDomainName} & {Environment.UserName}";
-var sqlCommand = "SELECT TOP 1 * FROM Logs ORDER BY Id DESC;";
+var sqlCommand = $"INSERT INTO Logs(Message) VALUES('{message}');";
 SqlCommand command = new(sqlCommand, connection);
-var reader = await command.ExecuteReaderAsync();
+var reader = await command.ExecuteNonQueryAsync();
 
-if (reader.Read())
-{
-    var id = reader.GetInt32(reader.GetOrdinal("Id"));
-    var name = reader.GetString(reader.GetOrdinal("Message"));
-
-    Console.WriteLine($"The most recent row is Id {id} and message '{message}'.");
-}
-else
-{
-    Console.WriteLine("No rows found.");
-}
+Console.WriteLine("Inserting the row was successful.");
 
 await connection.CloseAsync();
 
