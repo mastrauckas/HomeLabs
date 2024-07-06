@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sql-server-select-config
+data:
+  ConnectionStrings__SqlConnectionString: "Server=maa-learning-sql-server.database.windows.net;Authentication=Active Directory Managed Identity;User Id=8b195ce2-d7ef-4bf0-afe7-3207460f4e01;Database=LearningSandbox"
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    azure.workload.identity/client-id: 8b195ce2-d7ef-4bf0-afe7-3207460f4e01
+  name: sql-server-select-service-account
+  namespace: default
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: "sql-server-select"
+spec:
+  schedule: '*/1 * * * *'
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 10
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      parallelism: 1
+      template:
+        metadata:
+            labels:
+              azure.workload.identity/use: "true"  # Required. Only pods with this label can use workload identity.
+        spec:
+          serviceAccountName: sql-server-select-service-account
+          containers:
+          - name: sql-server-select
+            image: mastrauckas/sql-server-select:v1.0
+            imagePullPolicy: Always
+            envFrom:
+            - configMapRef:
+                name: sql-server-select-config
+          restartPolicy: Never
