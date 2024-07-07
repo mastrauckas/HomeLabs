@@ -9,7 +9,7 @@ param tags = {
 
 param userAssignedManagedIdentities = [
   {
-    name: 'sql-insert-user'
+    name: 'sql-insert-identity'
     region: region
     federatedIdentityCredential: {
       name: 'sql-insert-federated-identity-credential'
@@ -20,7 +20,7 @@ param userAssignedManagedIdentities = [
     }
   }
   {
-    name: 'sql-select-user'
+    name: 'sql-select-identity'
     region: region
     federatedIdentityCredential: {
       name: 'sql-select-federated-identity-credential'

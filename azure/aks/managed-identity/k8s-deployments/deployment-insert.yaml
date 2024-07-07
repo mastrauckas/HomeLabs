@@ -3,13 +3,13 @@ kind: ConfigMap
 metadata:
   name: sql-server-insert-config
 data:
-  ConnectionStrings__SqlConnectionString: "Server=maa-learning-sql-server.database.windows.net;Authentication=Active Directory Managed Identity;User Id=c8961dbf-4e68-4e79-ab26-3678b36d23ff;Database=LearningSandbox"
+  ConnectionStrings__SqlConnectionString: "Server=maa-learning-sql-server.database.windows.net;Authentication=Active Directory Managed Identity;User Id=7ead2ef3-e5ab-437b-b21a-2bfdefba8b59;Database=LearningSandbox"
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    azure.workload.identity/client-id: c8961dbf-4e68-4e79-ab26-3678b36d23ff
+    azure.workload.identity/client-id: 7ead2ef3-e5ab-437b-b21a-2bfdefba8b59
   name: sql-server-insert-service-account
   namespace: default
 ---
