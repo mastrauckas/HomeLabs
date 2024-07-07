@@ -7,9 +7,29 @@ param tags = {
   Purpose: 'Learning'
 }
 
-param userAssignedIdentities = [
-  'sql-insert-identity'
-  'sql-select-identity'
+param userAssignedManagedIdentities = [
+  {
+    name: 'sql-insert-user'
+    region: region
+    federatedIdentityCredential: {
+      name: 'sql-insert-federated-identity-credential'
+      subject: 'system:serviceaccount:default:sql-server-insert-service-account'
+      audiences: [
+        'api://AzureADTokenExchange'
+      ]
+    }
+  }
+  {
+    name: 'sql-select-user'
+    region: region
+    federatedIdentityCredential: {
+      name: 'sql-select-federated-identity-credential'
+      subject: 'system:serviceaccount:default:sql-server-select-service-account'
+      audiences: [
+        'api://AzureADTokenExchange'
+      ]
+    }
+  }
 ]
 
 // https://github.com/Azure/bicep/issues/8497

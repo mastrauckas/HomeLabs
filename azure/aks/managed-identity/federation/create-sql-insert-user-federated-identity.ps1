@@ -7,14 +7,14 @@ $SERVICE_ACCOUNT_NAME = "sql-server-insert-service-account" # This is the name i
 $USER_ASSIGNED_IDENTITY_NAME = "sql-insert-user" # Managed Identity name.
 $FEDERATED_IDENTITY_CREDENTIAL_NAME = "sql-serverfederated-identity"
 $AKS_OIDC_ISSUER = $(az aks show --name "${CLUSTER_NAME}" `
-        --resource-group "${RESOURCE_GROUP}" `
-        --query "oidcIssuerProfile.issuerUrl" `
-        --output tsv);
+                --resource-group "${RESOURCE_GROUP}" `
+                --query "oidcIssuerProfile.issuerUrl" `
+                --output tsv);
 
 az identity federated-credential create `
-    --name $FEDERATED_IDENTITY_CREDENTIAL_NAME `
-    --identity-name "$USER_ASSIGNED_IDENTITY_NAME" `
-    --resource-group "$RESOURCE_GROUP" `
-    --issuer "$AKS_OIDC_ISSUER" `
-    --subject system:serviceaccount:"$SERVICE_ACCOUNT_NAMESPACE":"$SERVICE_ACCOUNT_NAME" `
-    --audience api://AzureADTokenExchange
+        --name $FEDERATED_IDENTITY_CREDENTIAL_NAME `
+        --identity-name "$USER_ASSIGNED_IDENTITY_NAME" `
+        --resource-group "$RESOURCE_GROUP" `
+        --issuer "$AKS_OIDC_ISSUER" `
+        --subject system:serviceaccount:"$SERVICE_ACCOUNT_NAMESPACE":"$SERVICE_ACCOUNT_NAME" `
+        --audience api://AzureADTokenExchange

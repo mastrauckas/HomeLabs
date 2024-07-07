@@ -28,3 +28,5 @@ resource aks 'Microsoft.ContainerService/managedClusters@2024-01-02-preview' = {
     securityProfile: managedKubeCluster.securityProfile
   }
 }
+
+output issuerURL string = aks.properties.oidcIssuerProfile.issuerURL
