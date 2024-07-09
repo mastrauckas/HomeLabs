@@ -1,15 +1,19 @@
+#  //"SqlConnectionString": "Server=tcp:maa-learning-sql-server.database.windows.net;Authentication=Active Directory Default;Database=LearningSandbox;"
+#  // "SqlConnectionString": "Server=tcp:maa-learning-sql-server.database.windows.net;Authentication=Active Directory Managed Identity;Database=LearningSandbox;"
+#  // "SqlConnectionString": "Server=tcp:maa-learning-sql-server.database.windows.net;Authentication=Active Directory Managed Identity;User Id=function-managed-identity-user;Database=LearningSandbox;"
+
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: sql-server-select-config
 data:
-  ConnectionStrings__SqlConnectionString: "Server=maa-learning-sql-server.database.windows.net;Authentication=Active Directory Managed Identity;User Id=cd805678-ed6a-4696-bc7e-35a536b37151;Database=LearningSandbox"
+  ConnectionStrings__SqlConnectionString: "Server=maa-learning-sql-server.database.windows.net;Authentication=Active Directory Managed Identity;Database=LearningSandbox"
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   annotations:
-    azure.workload.identity/client-id: cd805678-ed6a-4696-bc7e-35a536b37151
+    azure.workload.identity/client-id: 6437c29a-30bc-46f4-9d15-b2943f07046e
   name: sql-server-select-service-account
   namespace: default
 ---
