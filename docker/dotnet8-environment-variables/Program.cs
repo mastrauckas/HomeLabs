@@ -20,13 +20,11 @@ foreach (var foreignKeyTable in table.ForeignKeyTables)
 
 Console.WriteLine();
 
-var virtueScriptConnectionString = configuration.GetConnectionString("VirtueScriptConnectionString");
-var virtueScriptImportConnectionString = configuration.GetConnectionString("VirtueScriptImportConnectionString");
+var sqlServerConnectionString = configuration.GetConnectionString("SqlServerConnectionString");
 var appInsightsConnectionString = configuration.GetConnectionString("AppInsightsConnectionString");
 var cosmosConnectionString = configuration.GetConnectionString("CosmosConnectionString");
 
-Console.WriteLine($"VirtueScriptConnectionString: {virtueScriptConnectionString}.");
-Console.WriteLine($"VirtueScriptImportConnectionString: {virtueScriptImportConnectionString}.");
+Console.WriteLine($"SqlServerConnectionString: {sqlServerConnectionString}.");
 Console.WriteLine($"AppInsightsConnectionString: {appInsightsConnectionString}.");
 Console.WriteLine($"CosmosConnectionString: {cosmosConnectionString}.");
 
