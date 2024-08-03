@@ -38,12 +38,12 @@ Console.WriteLine($"Application is now ending.");
 
 return;
 
-public class ForeignKeyTable
+public record struct ForeignKeyTable
 {
     public required string TableName { get; set; }
 }
 
-public class Table
+public record struct Table
 {
     public required string TableName { get; set; }
     public required List<ForeignKeyTable> ForeignKeyTables { get; set; }
