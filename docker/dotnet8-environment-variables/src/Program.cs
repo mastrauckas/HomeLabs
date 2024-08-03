@@ -30,6 +30,7 @@ Console.WriteLine($"CosmosConnectionString: {cosmosConnectionString}.");
 
 var howLongToSleepFor = configuration.GetValue<int>("HowLongToSleepForInSeconds");
 
+
 Console.WriteLine($"Sleep for {howLongToSleepFor} seconds.");
 
 Thread.Sleep(howLongToSleepFor * 1000);

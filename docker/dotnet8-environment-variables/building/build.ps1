@@ -1,6 +1,6 @@
-# cd ../src/
-# dotnet publish -c Release -o ../building/build
-# cd ../building
+cd ../src/
+dotnet publish -c Release -o ../building/build
+cd ../building
 
 docker build -t dotnet8-environment-variables:v1.0 -f Dockerfile .
 docker build -t dotnet8-environment-variables:latest -f Dockerfile .

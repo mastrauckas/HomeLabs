@@ -1,0 +1,41 @@
+# https://anthonyliriano.com/2021/04/10/21-kubernetes-configmap-and-.net5-appsettings.html
+# https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-azure-kubernetes-service
+# https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-8.0&tabs=basicconfiguration#configuration-by-environment
+# https://sysdig.com/learn-cloud-native/what-is-kubernetes-configmap/
+# https://www.paraesthesia.com/archive/2018/06/20/microsoft-extensions-configuration-deep-dive/
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dotnet8-environment-variables-config-1
+  namespace: default
+data:
+  Table__TableName: "NewestTable"
+  Table__ForeignKeyTables__0__tableName: "NewestChildOne"
+  Table__ForeignKeyTables__1__tableName: "NewestChildTwo"
+  Table__ForeignKeyTables__2__tableName: "NewestChildThree"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dotnet8-environment-variables-config-2
+  namespace: default
+data:
+  Sleep: "5" 
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dotnet8-environment-variables
+spec:
+  containers:
+  - name: dotnet8-environment-variables
+    image: mastrauckas/dotnet8-environment-variables:v1.0
+    envFrom:
+    - configMapRef:
+        name: dotnet8-environment-variables-config-1
+    env:
+    - name: HowLongToSleepForInSeconds
+      valueFrom:
+        configMapKeyRef:
+          name: dotnet8-environment-variables-config-2
+          key: Sleep

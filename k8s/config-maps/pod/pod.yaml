@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dotnet8-environment-variables
+spec:
+  containers:
+  - name: dotnet8-environment-variables
+    image: mastrauckas/dotnet8-environment-variables:v1.0
