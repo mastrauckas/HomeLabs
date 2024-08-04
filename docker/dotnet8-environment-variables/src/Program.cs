@@ -15,6 +15,15 @@ using var loggerFactory = LoggerFactory
         builder.AddConsole();
     });
 
+Console.WriteLine("Loggers:");
+ILogger<Program>? logger = loggerFactory.CreateLogger<Program>();
+logger.LogDebug("This is a Debug message.");
+logger.LogInformation("This is a Information message.");
+logger.LogWarning("This is a Warning message.");
+logger.LogError("This is a Error message.");
+logger.LogCritical("This is a Critical message.");
+Console.WriteLine();
+
 var table = configuration.GetSection("Table").Get<Table>();
 
 ArgumentNullException.ThrowIfNull(table);
@@ -36,15 +45,9 @@ Console.WriteLine($"SqlServerConnectionString: {sqlServerConnectionString}.");
 Console.WriteLine($"AppInsightsConnectionString: {appInsightsConnectionString}.");
 Console.WriteLine($"CosmosConnectionString: {cosmosConnectionString}.");
 
+Console.WriteLine();
+
 var howLongToSleepFor = configuration.GetValue<int>("HowLongToSleepForInSeconds");
-
-var logger = loggerFactory.CreateLogger<Program>();
-
-logger.LogDebug("This is a Debug message.");
-logger.LogInformation("This is a Information message.");
-logger.LogWarning("This is a Warning message.");
-logger.LogError("This is a Error message.");
-logger.LogCritical("This is a Critical message.");
 
 Console.WriteLine($"Sleep for {howLongToSleepFor} seconds.");
 
