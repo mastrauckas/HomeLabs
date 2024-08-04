@@ -9,6 +9,7 @@ metadata:
   name: dotnet8-environment-variables-config-1
   namespace: default
 data:
+  Logging__LogLevel__Default: "Error"
   Table__TableName: "NewestTable"
   Table__ForeignKeyTables__0__tableName: "NewestChildOne"
   Table__ForeignKeyTables__1__tableName: "NewestChildTwo"
@@ -30,6 +31,7 @@ spec:
   containers:
   - name: dotnet8-environment-variables
     image: mastrauckas/dotnet8-environment-variables:v1.0
+    imagePullPolicy: Always
     envFrom:
     - configMapRef:
         name: dotnet8-environment-variables-config-1
