@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 var builder = new ConfigurationBuilder()
      .AddJsonFile("appsettings.json")
@@ -6,6 +7,13 @@ var builder = new ConfigurationBuilder()
      .AddEnvironmentVariables();
 
 var configuration = builder.Build();
+
+using var loggerFactory = LoggerFactory
+    .Create(builder =>
+    {
+        builder.AddConfiguration(configuration.GetSection("Logging"));
+        builder.AddConsole();
+    });
 
 var table = configuration.GetSection("Table").Get<Table>();
 
@@ -30,6 +38,13 @@ Console.WriteLine($"CosmosConnectionString: {cosmosConnectionString}.");
 
 var howLongToSleepFor = configuration.GetValue<int>("HowLongToSleepForInSeconds");
 
+var logger = loggerFactory.CreateLogger<Program>();
+
+logger.LogDebug("This is a Debug message.");
+logger.LogInformation("This is a Information message.");
+logger.LogWarning("This is a Warning message.");
+logger.LogError("This is a Error message.");
+logger.LogCritical("This is a Critical message.");
 
 Console.WriteLine($"Sleep for {howLongToSleepFor} seconds.");
 
