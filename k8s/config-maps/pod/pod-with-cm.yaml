@@ -3,6 +3,7 @@
 # https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-8.0&tabs=basicconfiguration#configuration-by-environment
 # https://sysdig.com/learn-cloud-native/what-is-kubernetes-configmap/
 # https://www.paraesthesia.com/archive/2018/06/20/microsoft-extensions-configuration-deep-dive/
+# https://wangwei1237.github.io/Kubernetes-in-Action-Second-Edition/docs/Using_a_config_map_to_decouple_configuration_from_the_pod.html
 apiVersion: v1
 kind: ConfigMap
 metadata:
