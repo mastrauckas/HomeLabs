@@ -1,0 +1,52 @@
+# https://anthonyliriano.com/2021/04/10/21-kubernetes-configmap-and-.net5-appsettings.html
+# https://learn.microsoft.com/en-us/azure/azure-app-configuration/quickstart-azure-kubernetes-service
+# https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/?view=aspnetcore-8.0&tabs=basicconfiguration#configuration-by-environment
+# https://sysdig.com/learn-cloud-native/what-is-kubernetes-configmap/
+# https://www.paraesthesia.com/archive/2018/06/20/microsoft-extensions-configuration-deep-dive/
+# https://wangwei1237.github.io/Kubernetes-in-Action-Second-Edition/docs/Using_a_config_map_to_decouple_configuration_from_the_pod.html
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dotnet8-environment-variables-appsettings-config
+  namespace: default
+data:
+  new-appsettings.json: |-
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Debug"
+        }
+      },
+      "ConnectionStrings": {
+        "SqlServerConnectionString": "MaaSqlServerConnectionString",
+        "AppInsightsConnectionString": "MaaAppInsightsConnectionString",
+        "CosmosConnectionString": "MaaCosmosConnectionString"
+      },
+      "Table": {
+        "TableName": "MaaTable",
+        "ForeignKeyTables": [
+          {
+            "tableName": "MaaChildTableOne"
+          }
+        ]
+      },
+      "HowLongToSleepForInSeconds": 2
+    }
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dotnet8-environment-variables
+spec:
+  volumes:
+    - name: appsettings-volume
+      configMap:
+        name: dotnet8-environment-variables-appsettings-config
+  containers:
+  - name: dotnet8-environment-variables
+    image: mastrauckas/dotnet8-environment-variables:v1.0
+    imagePullPolicy: Always
+    volumeMounts:
+      - name: appsettings-volume
+        mountPath: /app/appsettings.json
+        subPath: new-appsettings.json
