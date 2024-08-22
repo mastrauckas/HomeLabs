@@ -6,6 +6,9 @@
   - Service Accounts
 - User Namespaces
   - not running as root user.
+- Hooks
+  - PostStart
+  - PreStop
 - Init Containers
 - Sidecar Containers
 - Storage
