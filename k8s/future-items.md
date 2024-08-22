@@ -1,7 +1,35 @@
 # Future Items
 
+- Load Balancing
+- Security
+  - SecurityContext
+  - Service Accounts
+- User Namespaces
+  - not running as root user.
+- Init Containers
+- Sidecar Containers
+- Storage
 - RBAC
-- QoS Class
+- Downward API
+- QoS Class/Resource Quotas
+  - request
+  - limit
+  - priority
+- Scheduling, Preemption and Eviction
+  - affinity
+  - anti affinity
+  - Node affinity weight
+  - podAntiAffinity
+  - podAffinity
+  - topologySpreadConstraints
+- Add-Ons, Extensions
+- Probes
+  - Liveness
+  - Readiness
+  - Startup Probes
+- Configuration
+  - ConfigMaps
+  - Secrets
 - Jobs
   - ~~Normal single Job.~~
   - Normal multiple Jobs.
@@ -33,10 +61,3 @@
   - nodeselector
 - Taints and Tolerations
 - [Scheduling, Preemption and Eviction](https://kubernetes.io/docs/concepts/scheduling-eviction/)
-- Resource Quotas
-  - affinity
-  - anti affinity
-  - Node affinity weight
-  - podAntiAffinity
-  - podAffinity
-  - topologySpreadConstraints
