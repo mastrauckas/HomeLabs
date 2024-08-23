@@ -1,6 +1,6 @@
 # Future Items
 
-- Load Balancing
+- Auto Scaling
 - Security
   - SecurityContext
   - Service Accounts
