@@ -1,6 +1,6 @@
 # Future Items
 
-- Auto Scaling
+- Autoscaling
 - Security
   - SecurityContext
   - Service Accounts
