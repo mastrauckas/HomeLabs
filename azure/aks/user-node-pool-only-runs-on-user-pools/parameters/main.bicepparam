@@ -15,7 +15,7 @@ param managedKubeCluster = {
     tier: 'Free'
   }
   enableRBAC: true
-  nodeResourceGroup: 'k8s-testing-cluster-managed-${region}-rg'
+  nodeResourceGroup: 'k8s-testing-cluster-managed-rg'
   disableLocalAccounts: false
   aadProfile: null
   autoUpgradeProfile: {

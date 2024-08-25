@@ -1,7 +1,7 @@
 # https://learn.microsoft.com/en-us/cli/azure/aks/nodepool?view=azure-cli-latest#az-aks-nodepool-add
 az aks nodepool add `
     --resource-group k8s-testing-cluster-eastus-rg `
-    --cluster-name aks-test-cluster-eastus `
+    --cluster-name k8s-testing-cluster-rg `
     --name userpool1 `
     --node-count 1 `
     --mode User `
