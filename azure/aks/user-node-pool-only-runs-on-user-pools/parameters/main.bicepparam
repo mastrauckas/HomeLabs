@@ -6,7 +6,7 @@ param tags = {}
 
 // https://learn.microsoft.com/en-us/azure/templates/microsoft.containerservice/2023-01-02-preview/managedclusters?pivots=deployment-language-bicep
 param managedKubeCluster = {
-  name: 'aks-test-cluster-${region}'
+  name: 'aks-test-cluster'
   region: region
   kubernetesVersion: '1.30.3'
   dnsPrefix: 'maa-dns'
