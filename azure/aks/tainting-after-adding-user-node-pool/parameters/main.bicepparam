@@ -35,7 +35,7 @@ param managedKubeCluster = {
       mode: 'System'
       count: 1 // This is how many nodes/vms to start with.
       minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
+      maxCount: 1 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
       messageOfTheDay: null
       vmSize: 'Standard_D2s_v3'
@@ -45,11 +45,7 @@ param managedKubeCluster = {
       enableAutoScaling: true
       scaleSetPriority: 'Regular' // Values Regular and Spot
       enableNodePublicIP: false
-      availabilityZones: [
-        '1'
-        '2'
-        '3'
-      ]
+      availabilityZones: null
       tags: {}
       nodeLabels: {}
       nodeTaints: []
@@ -59,7 +55,7 @@ param managedKubeCluster = {
       mode: 'User'
       count: 1 // This is how many nodes/vms to start with.
       minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
+      maxCount: 1 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
       messageOfTheDay: null
       vmSize: 'Standard_B2s'
@@ -69,59 +65,7 @@ param managedKubeCluster = {
       enableAutoScaling: true
       scaleSetPriority: 'Regular' // Values Regular and Spot
       enableNodePublicIP: false
-      availabilityZones: [
-        '1'
-        '2'
-        '3'
-      ]
-      tags: {}
-      nodeLabels: {}
-      nodeTaints: ['dotnet=8.0:NoSchedule']
-    }
-    {
-      name: 'userpool2'
-      mode: 'User'
-      count: 1 // This is how many nodes/vms to start with.
-      minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
-      maxPods: 100
-      messageOfTheDay: null
-      vmSize: 'Standard_B2s'
-      osType: 'Linux'
-      osDiskSizeGB: 30
-      type: 'VirtualMachineScaleSets'
-      enableAutoScaling: true
-      scaleSetPriority: 'Regular' // Values Regular and Spot
-      enableNodePublicIP: false
-      availabilityZones: [
-        '1'
-        '2'
-        '3'
-      ]
-      tags: {}
-      nodeLabels: {}
-      nodeTaints: []
-    }
-    {
-      name: 'userpool3'
-      mode: 'User'
-      count: 1 // This is how many nodes/vms to start with.
-      minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 5 // The maximum number of nodes/vms for auto-scaling
-      maxPods: 100
-      messageOfTheDay: null
-      vmSize: 'Standard_B2s'
-      osType: 'Linux'
-      osDiskSizeGB: 30
-      type: 'VirtualMachineScaleSets'
-      enableAutoScaling: true
-      scaleSetPriority: 'Regular' // Values Regular and Spot
-      enableNodePublicIP: false
-      availabilityZones: [
-        '1'
-        '2'
-        '3'
-      ]
+      availabilityZones: null
       tags: {}
       nodeLabels: {}
       nodeTaints: []
