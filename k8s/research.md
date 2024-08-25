@@ -1,6 +1,7 @@
-# Future Items
+# Items to Research
 
-- Autoscaling
+- Horizontal Pod Autoscaling (HPA)
+- Prometheus
 - Security
   - SecurityContext
   - Service Accounts
