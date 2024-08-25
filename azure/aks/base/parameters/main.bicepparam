@@ -41,7 +41,8 @@ param managedKubeCluster = {
       vmSize: 'Standard_D2s_v3'
       osType: 'Linux'
       osDiskSizeGB: 30
-      type: 'VirtualMachineScaleSets'
+      type: 'VirtualMachineScaleSets' // AvailabilitySet, VirtualMachineScaleSets, VirtualMachines
+
       enableAutoScaling: true
       scaleSetPriority: 'Regular' // Values Regular and Spot
       enableNodePublicIP: false
@@ -76,7 +77,7 @@ param managedKubeCluster = {
       ]
       tags: {}
       nodeLabels: {}
-      nodeTaints: ['dotnet=8.0:NoSchedule']
+      nodeTaints: []
     }
     {
       name: 'userpool2'

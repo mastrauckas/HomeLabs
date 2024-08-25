@@ -2,10 +2,7 @@ using '../main.bicep'
 
 param region = ''
 
-param tags = {
-  Project: 'PRJ00004A'
-  Purpose: 'Learning'
-}
+param tags = {}
 
 // https://learn.microsoft.com/en-us/azure/templates/microsoft.containerservice/2023-01-02-preview/managedclusters?pivots=deployment-language-bicep
 param managedKubeCluster = {
@@ -34,41 +31,21 @@ param managedKubeCluster = {
       name: 'systempool1'
       mode: 'System'
       count: 1 // This is how many nodes/vms to start with.
-      minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 1 // The maximum number of nodes/vms for auto-scaling
       maxPods: 100
       messageOfTheDay: null
       vmSize: 'Standard_D2s_v3'
       osType: 'Linux'
       osDiskSizeGB: 30
-      type: 'VirtualMachineScaleSets'
-      enableAutoScaling: true
+      type: 'VirtualMachineScaleSets' // AvailabilitySet, VirtualMachineScaleSets, VirtualMachines
+      enableAutoScaling: false
       scaleSetPriority: 'Regular' // Values Regular and Spot
       enableNodePublicIP: false
       availabilityZones: null
       tags: {}
       nodeLabels: {}
-      nodeTaints: []
-    }
-    {
-      name: 'userpool1'
-      mode: 'User'
-      count: 1 // This is how many nodes/vms to start with.
-      minCount: 1 // The minimum number of nodes/vms for auto-scaling
-      maxCount: 1 // The maximum number of nodes/vms for auto-scaling
-      maxPods: 100
-      messageOfTheDay: null
-      vmSize: 'Standard_B2s'
-      osType: 'Linux'
-      osDiskSizeGB: 30
-      type: 'VirtualMachineScaleSets'
-      enableAutoScaling: true
-      scaleSetPriority: 'Regular' // Values Regular and Spot
-      enableNodePublicIP: false
-      availabilityZones: null
-      tags: {}
-      nodeLabels: {}
-      nodeTaints: []
+      nodeTaints: [
+        'CriticalAddonsOnly=true:NoSchedule' // https://learn.microsoft.com/en-us/azure/aks/use-system-pools?tabs=azure-cli
+      ]
     }
   ]
   linuxProfile: null
@@ -78,19 +55,10 @@ param managedKubeCluster = {
     enablePrivateClusterPublicFQDN: false // Whether to create additional public FQDN for private cluster or not.
     privateDNSZone: null
     subnetId: null
-    // disableRunCommand: false
-    // enableVnetIntegration: false
   }
   addonProfiles: {
     azurepolicy: null
     azureKeyvaultSecretsProvider: null // Secrets Store  Container Storage Interfac(CSI) Driver
-    // azureKeyvaultSecretsProvider: {
-    //   enabled: true
-    //   secrectStoreConfig: {
-    //     enableSecretRotation: false
-    //     rotationPollInterval: '2m'
-    //   }
-    // }
   }
   diskEncryptionSetID: null
   networkProfile: {
