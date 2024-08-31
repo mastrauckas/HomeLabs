@@ -2,6 +2,7 @@
 
 - Horizontal Pod Autoscaling (HPA)
 - Prometheus
+- Cordon & Draining
 - Security
   - SecurityContext
   - Service Accounts
