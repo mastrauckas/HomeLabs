@@ -1,6 +1,6 @@
 using '../main.bicep'
 
-var clusterName = 'aks-test-cluster-${region}'
+var clusterName = 'aks-test-cluster'
 
 param region = ''
 

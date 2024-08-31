@@ -2,11 +2,16 @@ using '../main.bicep'
 
 param region = ''
 
-param tags = {}
+var clusterName = 'aks-test-cluster'
+
+param tags = {
+  Project: 'User Node Pool Only Run User Pods'
+  Purpose: 'Learning'
+}
 
 // https://learn.microsoft.com/en-us/azure/templates/microsoft.containerservice/2023-01-02-preview/managedclusters?pivots=deployment-language-bicep
 param managedKubeCluster = {
-  name: 'aks-test-cluster'
+  name: clusterName
   region: region
   kubernetesVersion: '1.30.3'
   dnsPrefix: 'maa-dns'

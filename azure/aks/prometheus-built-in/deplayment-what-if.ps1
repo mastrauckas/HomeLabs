@@ -1,11 +1,11 @@
 $region = 'eastus'
-$resourceGroup = "k8s-prometheus-built-in-cluster-$region-rg"
+$resourceGroup = "k8s-prometheus-built-in-cluster-rg"
 
 az group create `
     --resource-group $resourceGroup `
     --location $region;
 
-az deployment group create `
+az deployment group what-if `
     --name k8s-testing-deployment `
     --template-file ./main.bicep `
     --parameters ./parameters/main.bicepparam `
