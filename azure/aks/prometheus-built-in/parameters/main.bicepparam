@@ -13,7 +13,7 @@ param tags = {
 param managedKubeCluster = {
   name: clusterName
   region: region
-  kubernetesVersion: '1.29.4'
+  kubernetesVersion: '1.30.3'
   dnsPrefix: 'dns-maa'
   sku: {
     name: 'Base'
