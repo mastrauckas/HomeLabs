@@ -5,12 +5,11 @@ param primaryRegion = ''
 
 var enableFreeTier = true // This can only be enabled once per subscription.
 
-var accountThroughput = 1200
-var databaseThroughput = null
+var accountThroughput = 800
+var databaseThroughput = 800
 
-var containerOneThroughput = 400
-var containerTwoThroughput = 400
-var containerThreeThroughput = 400
+var containerOneThroughput = null
+var containerTwoThroughput = null
 
 var consistencyPolicy = {
   defaultConsistencyLevel: 'Strong'
@@ -181,38 +180,6 @@ var containerTwo = {
   }
 }
 
-var containerThree = {
-  name: 'Container3'
-  autoscaleSettings: null
-  throughput: containerThreeThroughput
-  defaultTtl: -1
-
-  materializedViewDefinition: {}
-  restoreParameters: []
-  partitionKey: {
-    paths: [
-      '/containerThreeId'
-    ]
-    kind: 'Hash'
-  }
-  uniqueKeyPolicy: {}
-  indexingPolicy: {
-    indexingMode: 'consistent'
-    includedPaths: [
-      {
-        path: '/containerThreeId/?'
-      }
-    ]
-    excludedPaths: [
-      {
-        path: '/*'
-      }
-    ]
-    compositeIndexes: []
-    spatialIndexes: []
-  }
-}
-
 param cosmosAccount = {
   name: 'cosmos-testing-db'
   region: primaryRegion
@@ -264,6 +231,5 @@ param cosmosAccount = {
   containers: [
     containerOne
     containerTwo
-    containerThree
   ]
 }

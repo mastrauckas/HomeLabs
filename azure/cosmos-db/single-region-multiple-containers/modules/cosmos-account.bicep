@@ -4,7 +4,7 @@ param cosmosAccount object
 param workspaceDiagnosticSettings object
 param workspaceId string
 
-resource CosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2024-02-15-preview' = {
+resource CosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
   name: toLower(cosmosAccount.name)
   tags: tags
   location: cosmosAccount.region
