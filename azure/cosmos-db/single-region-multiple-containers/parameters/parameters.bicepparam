@@ -5,9 +5,12 @@ param primaryRegion = ''
 
 var enableFreeTier = true // This can only be enabled once per subscription.
 
-var accountThroughput = 1000
-var containerThroughput = 1000
+var accountThroughput = 1200
 var databaseThroughput = null
+
+var containerOneThroughput = 400
+var containerTwoThroughput = 400
+var containerThreeThroughput = 400
 
 var consistencyPolicy = {
   defaultConsistencyLevel: 'Strong'
@@ -115,9 +118,9 @@ param applicationInsights = {
 }
 
 var containerOne = {
-  name: 'ContainerOne'
+  name: 'Container1'
   autoscaleSettings: null
-  throughput: containerThroughput
+  throughput: containerOneThroughput
   defaultTtl: -1
 
   materializedViewDefinition: {}
@@ -147,9 +150,9 @@ var containerOne = {
 }
 
 var containerTwo = {
-  name: 'containerTwo'
+  name: 'Container2'
   autoscaleSettings: null
-  throughput: containerThroughput
+  throughput: containerTwoThroughput
   defaultTtl: -1
 
   materializedViewDefinition: {}
@@ -179,9 +182,9 @@ var containerTwo = {
 }
 
 var containerThree = {
-  name: 'containerThree'
+  name: 'Container3'
   autoscaleSettings: null
-  throughput: containerThroughput
+  throughput: containerThreeThroughput
   defaultTtl: -1
 
   materializedViewDefinition: {}
