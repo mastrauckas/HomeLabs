@@ -39,6 +39,7 @@ resource DiagnosticSettings 'Microsoft.Insights/diagnosticSettings@2021-05-01-pr
     workspaceId: workspaceId
     logs: workspaceDiagnosticSettings.logs
     metrics: workspaceDiagnosticSettings.metrics
+    logAnalyticsDestinationType: workspaceDiagnosticSettings.logAnalyticsDestinationType
   }
 }
 

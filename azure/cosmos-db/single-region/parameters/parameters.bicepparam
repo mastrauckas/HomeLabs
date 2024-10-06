@@ -6,8 +6,8 @@ param primaryRegion = ''
 var enableFreeTier = true // This can only be enabled once per subscription.
 
 var accountThroughput = 1000
-var containerThroughput = 1000
-var databaseThroughput = null
+var containerThroughput = null
+var databaseThroughput = 1000
 
 var consistencyPolicy = {
   defaultConsistencyLevel: 'Strong'
@@ -105,6 +105,7 @@ param workspaceDiagnosticSettings = {
       enabled: true
     }
   ]
+  logAnalyticsDestinationType: 'Dedicated' // This uses Resource specific tables instead of Azure Diagnostics.
 }
 
 param applicationInsights = {
